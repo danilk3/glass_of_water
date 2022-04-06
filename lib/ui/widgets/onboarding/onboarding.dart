@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/resources/resources.dart';
-import 'package:glass_of_water/ui/navigation/main_navigation.dart';
+import 'package:glass_of_water/ui/themes/app_colors.dart';
+import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class OnboardingWidget extends StatefulWidget {
@@ -38,6 +39,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.mainLightGrey,
       body: IntroductionScreen(
         pages: _pages,
         onDone: () {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/resources/resources.dart';
+import 'package:glass_of_water/ui/themes/app_colors.dart';
 import 'package:glass_of_water/ui/themes/button_style.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
+import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 
 class AuthWidget extends StatelessWidget {
   const AuthWidget({Key? key}) : super(key: key);
@@ -9,6 +11,7 @@ class AuthWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.mainLightGrey,
       resizeToAvoidBottomInset: false,
       body: Column(
         children: [
@@ -51,7 +54,7 @@ class _FormWidget extends StatelessWidget {
         //const _ErrorMessageWidget(),
         Text(
           'Email',
-          style: AppTextStyle.textStyle,
+          style: AppTextStyle.inputLabelStyle,
         ),
         const SizedBox(height: 7),
         const TextField(
@@ -83,7 +86,7 @@ class _LogInCodeWidget extends StatelessWidget {
         const SizedBox(height: 35),
         Text(
           'Log in code',
-          style: AppTextStyle.textStyle,
+          style: AppTextStyle.inputLabelStyle,
         ),
         const SizedBox(height: 7),
         const TextField(
@@ -91,7 +94,7 @@ class _LogInCodeWidget extends StatelessWidget {
           decoration: AppTextStyle.inputDecoration,
         ),
         const SizedBox(height: 25),
-        _AuthButtonWidget(),
+        const _AuthButtonWidget(),
       ],
     );
   }
@@ -116,7 +119,9 @@ class _AuthButtonWidget extends StatelessWidget {
     //     : const Text("Войти");
     return TextButton(
       //onPressed: model?.canStartAuth == true ? () => model?.auth(context) : null,
-      onPressed: () => {},
+      onPressed: () {
+        Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.mainScreen);
+      },
       style: AppButtonStyle.filledButton,
       child: const Text('Log in'),
     );

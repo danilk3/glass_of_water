@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/ui/navigation/main_navigation.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
+import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 
 class MyApp extends StatelessWidget {
   static final mainNavigation = MainNavigation();
@@ -12,12 +12,12 @@ class MyApp extends StatelessWidget {
       title: 'Glass of water',
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.mainLightGrey,
+          backgroundColor: AppColors.mainLightBlue,
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: AppColors.mainLightBlue,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.grey,
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.white,
         ),
       ),
        routes: mainNavigation.routes,

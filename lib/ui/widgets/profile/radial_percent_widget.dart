@@ -1,0 +1,123 @@
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:glass_of_water/ui/themes/app_colors.dart';
+
+class RadialPercentWidget extends StatelessWidget {
+  final Widget child;
+  final double percent;
+  final double lineWidth;
+
+  RadialPercentWidget({
+    Key? key,
+    required this.child,
+    required this.percent,
+    required this.lineWidth,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        CustomPaint(
+          painter: _RadialPercentPainter(
+            percent: percent,
+            lineWidth: lineWidth,
+          ),
+        ),
+        Center(
+          child: Padding(
+            padding: EdgeInsets.all(lineWidth),
+            child: child,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RadialPercentPainter extends CustomPainter {
+  final double percent;
+  final double lineWidth;
+
+  _RadialPercentPainter({
+    required this.percent,
+    required this.lineWidth,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = _calculateCirclesRect(size);
+    _darwBackground(canvas, rect);
+    _darwFreeSpace(canvas, rect);
+    _darwFiledSpace(canvas, rect);
+  }
+
+  void _darwBackground(Canvas canvas, Rect rect) {
+    final paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+    canvas.drawOval(rect, paint);
+  }
+
+  void _darwFiledSpace(Canvas canvas, Rect rect) {
+    Color lineColor;
+    if (percent < 0.17) {
+      lineColor = const Color.fromRGBO(255, 13, 13, 1);
+    } else if (percent < 0.33) {
+      lineColor = const Color.fromRGBO(255, 78, 17, 1);
+    } else if (percent < 0.48) {
+      lineColor = const Color.fromRGBO(255, 142, 21, 1);
+    } else if (percent < 0.65) {
+      lineColor = const Color.fromRGBO(250, 183, 51, 1);
+    } else if (percent < 0.81) {
+      lineColor = const Color.fromRGBO(172, 179, 52, 1);
+    } else {
+      lineColor = const Color.fromRGBO(105, 179, 76, 1);
+    }
+    final paint = Paint()
+      ..color = lineColor
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    paint.strokeWidth = lineWidth;
+
+    canvas.drawArc(
+      rect,
+      _radians(-90),
+      _radians(360 * percent),
+      false,
+      paint,
+    );
+  }
+
+  void _darwFreeSpace(Canvas canvas, Rect rect) {
+    final paint = Paint()
+      ..color = AppColors.mainLightGrey
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = lineWidth;
+
+    canvas.drawArc(
+      rect,
+      _radians(360 * percent - 90),
+      _radians(360 * (1.0 - percent)),
+      false,
+      paint,
+    );
+  }
+
+  double _radians(double degrees) {
+    return degrees * pi / 180;
+  }
+
+  Rect _calculateCirclesRect(Size size) {
+    final offset = lineWidth / 2;
+    final rect = Offset(offset, offset) &
+        Size(size.width - lineWidth, size.height - lineWidth);
+    return rect;
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
