@@ -25,7 +25,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             height: 75,
             child: RadialPercentWidget(
               // user`s rating
-              percent: 0.9,
+              percent: 0.3,
               lineWidth: 4,
               // user photo
               child: const Image(
@@ -37,7 +37,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           ),
           const SizedBox(height: 10),
           Text(
-            '70%',
+            '30%',
             style: AppTextStyle.boldTextStyle,
           ),
           const SizedBox(height: 10),

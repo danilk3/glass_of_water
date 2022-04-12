@@ -61,22 +61,8 @@ class _RadialPercentPainter extends CustomPainter {
   }
 
   void _darwFiledSpace(Canvas canvas, Rect rect) {
-    Color lineColor;
-    if (percent < 0.17) {
-      lineColor = const Color.fromRGBO(255, 13, 13, 1);
-    } else if (percent < 0.33) {
-      lineColor = const Color.fromRGBO(255, 78, 17, 1);
-    } else if (percent < 0.48) {
-      lineColor = const Color.fromRGBO(255, 142, 21, 1);
-    } else if (percent < 0.65) {
-      lineColor = const Color.fromRGBO(250, 183, 51, 1);
-    } else if (percent < 0.81) {
-      lineColor = const Color.fromRGBO(172, 179, 52, 1);
-    } else {
-      lineColor = const Color.fromRGBO(105, 179, 76, 1);
-    }
     final paint = Paint()
-      ..color = lineColor
+      ..color = AppColors.getProgressColor(percent)
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
     paint.strokeWidth = lineWidth;

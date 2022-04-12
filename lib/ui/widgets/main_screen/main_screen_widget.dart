@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
+import 'package:glass_of_water/ui/widgets/challenges/challenges_widget.dart';
+import 'package:glass_of_water/ui/widgets/history/history_widget.dart';
 import 'package:glass_of_water/ui/widgets/profile/profile_widget.dart';
+import 'package:glass_of_water/ui/widgets/trip.dart/trip_widget.dart';
 
 class MainScreenWidget extends StatefulWidget {
   const MainScreenWidget({Key? key}) : super(key: key);
@@ -13,9 +16,9 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
   int _selectedTab = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    const Center(child: Text('Trip')),
-    const Center(child: Text('Challenges')),
-    const Center(child: Text('History')),
+    const TripWidget(),
+    ChallengesWidget(),
+    HistoryWidget(),
     const Center(child: Text('Friends')),
     const ProfileWidget(),
   ];
@@ -38,10 +41,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
         title: const Center(child: Text('Glass of water')),
         centerTitle: true,
       ),
-      body: IndexedStack(
-        index: _selectedTab,
-        children: _widgetOptions,
-      ),
+      body: _widgetOptions[_selectedTab],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedTab,
         type: BottomNavigationBarType.fixed,

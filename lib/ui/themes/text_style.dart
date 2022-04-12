@@ -16,6 +16,9 @@ abstract class AppTextStyle {
   static final titleStyle =
       GoogleFonts.roboto(fontSize: 26, fontWeight: FontWeight.w700, color: const Color(0xFF212529));
 
+  static final buttonTextStyle =
+      GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.w500, color: Colors.white);
+
   static const inputDecoration = InputDecoration(
     border: OutlineInputBorder(),
     contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
