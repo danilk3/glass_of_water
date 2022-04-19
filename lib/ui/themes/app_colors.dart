@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 abstract class AppColors {
   static const mainLightGrey = Color.fromRGBO(244, 244, 244, 1);
   static const mainLightBlue = Color.fromARGB(255, 31, 116, 207);
+  static const successGreen = Color.fromRGBO(79, 171, 115, 1);
 
   static Color getProgressColor(double percent) {
     if (percent < 0.17) {
@@ -17,7 +18,7 @@ abstract class AppColors {
     } else if (percent < 0.81) {
       return const Color.fromRGBO(172, 179, 52, 1);
     } else {
-      return const Color.fromRGBO(105, 179, 76, 1);
+      return const Color.fromRGBO(79, 171, 115, 1);
     }
   }
 }

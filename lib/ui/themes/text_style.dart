@@ -13,11 +13,17 @@ abstract class AppTextStyle {
   static final profileOptionsStyle =
       GoogleFonts.roboto(fontSize: 20, color: const Color(0xFF212529));
 
+  static final profileOptionsBoldStyle =
+      GoogleFonts.roboto(fontSize: 20, fontWeight: FontWeight.w700, color: const Color(0xFF212529));
+
   static final titleStyle =
       GoogleFonts.roboto(fontSize: 26, fontWeight: FontWeight.w700, color: const Color(0xFF212529));
 
+  static final subTitleStyle =
+      GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.w700, color: const Color(0xFF212529));
+
   static final buttonTextStyle =
-      GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.w500, color: Colors.white);
+      GoogleFonts.roboto(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.white);
 
   static const inputDecoration = InputDecoration(
     border: OutlineInputBorder(),

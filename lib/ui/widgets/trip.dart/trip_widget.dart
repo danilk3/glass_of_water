@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
+import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 import 'package:lottie/lottie.dart';
 
 class TripWidget extends StatefulWidget {
@@ -14,14 +15,11 @@ class _TripWidgetState extends State<TripWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(
-          height: 30,
+        SizedBox(
+          height: 450,
+          child: Lottie.asset('animations/Splash_short.json'),
         ),
         const _StatisticsButtonWidget(),
-        SizedBox(
-          height: 500,
-          child: Lottie.asset('animations/stable_glass.json'),
-        ),
         const _StartTripButtonWidget(),
         const SizedBox(
           height: 20,
@@ -49,23 +47,7 @@ class _StatisticsButtonWidget extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          showModalBottomSheet<void>(
-            context: context,
-            isScrollControlled: true,
-            builder: (context) {
-              return FractionallySizedBox(
-                heightFactor: 0.9,
-                child: Container(
-                  color: Colors.red,
-                  child: Column(
-                    children: const [
-                      Icon(Icons.arrow_downward),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
+            Navigator.of(context).pushNamed(MainNavigationRouteNames.tripResults);
         },
         child: Text(
           'Look at the statistics of the last trip!',
