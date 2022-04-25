@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:glass_of_water/Inherited/provider.dart';
 import 'package:glass_of_water/resources/resources.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
-import 'package:glass_of_water/ui/themes/button_style.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
-import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
+import 'package:glass_of_water/ui/widgets/auth/auth_model.dart';
 
 class AuthWidget extends StatelessWidget {
   const AuthWidget({Key? key}) : super(key: key);
@@ -12,31 +12,33 @@ class AuthWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.mainLightGrey,
-      resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [
-          const SizedBox(height: 75),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Image(image: AssetImage(AppImages.logo)),
-              SizedBox(
-                width: 25,
-              ),
-              Text(
-                'Glass\nof\nwater',
-                style: TextStyle(fontSize: 36, fontWeight: FontWeight.w400),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 100,
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 40),
-            child: _FormWidget(),
-          ),
-        ],
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 75),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Image(image: AssetImage(AppImages.logo)),
+                SizedBox(
+                  width: 25,
+                ),
+                Text(
+                  'Glass\nof\nwater',
+                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.w400),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 80,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 40),
+              child: _FormWidget(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -47,21 +49,26 @@ class _FormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final model = NotifierProvider.read<AuthModel>(context);
+    final model = NotifierProvider.read<AuthModel>(context);
+    final watch = NotifierProvider.watch<AuthModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //const _ErrorMessageWidget(),
         Text(
           'Email',
           style: AppTextStyle.inputLabelStyle,
         ),
         const SizedBox(height: 7),
-        const TextField(
-          //controller: model?.loginTextController,
+        TextField(
+          controller: model?.emailTextController,
           decoration: AppTextStyle.inputDecoration,
         ),
-        const _LogInCodeWidget(),
+        const _ErrorMessageEmailWidget(),
+        const SizedBox(
+          height: 10,
+        ),
+        const _SendCodeButtonWidget(),
+        if (watch?.isCodeSend == true) const _LogInCodeWidget(),
       ],
     );
   }
@@ -72,15 +79,17 @@ class _LogInCodeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.read<AuthModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 35),
+        const SizedBox(height: 25),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Text(
             'We just send you a temporary sign up code. Please check your inbox and paste the sign up code below.',
             textAlign: TextAlign.center,
+            style: TextStyle(color: Color.fromARGB(255, 106, 106, 106)),
           ),
         ),
         const SizedBox(height: 35),
@@ -89,12 +98,62 @@ class _LogInCodeWidget extends StatelessWidget {
           style: AppTextStyle.inputLabelStyle,
         ),
         const SizedBox(height: 7),
-        const TextField(
-          //controller: model?.loginTextController,
+        TextField(
+          controller: model?.codeTextController,
           decoration: AppTextStyle.inputDecoration,
         ),
-        const SizedBox(height: 25),
+        const _ErrorMessageCodeWidget(),
+        const SizedBox(height: 10),
         const _AuthButtonWidget(),
+      ],
+    );
+  }
+}
+
+class _SendCodeButtonWidget extends StatelessWidget {
+  const _SendCodeButtonWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final model = NotifierProvider.read<AuthModel>(context);
+    final watch = NotifierProvider.watch<AuthModel>(context);
+    final text = watch?.isCodeSend == true ? 'Resend code' : 'Send login code';
+    final child = watch?.isEmailSending == true
+        ? const SizedBox(
+            width: 15,
+            height: 15,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 2,
+            ),
+          )
+        : Text(
+            text,
+            style: AppTextStyle.buttonTextStyle,
+          );
+    return Row(
+      children: [
+        Row(
+          children: [
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    watch?.isTimerStarted == true ? Colors.grey : Colors.blue),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
+              onPressed: watch?.isCodeChecking == false && watch?.isTimerStarted == false
+                  ? () => model?.sendEmail(context)
+                  : null,
+              child: child,
+            ),
+            const SizedBox(width: 5),
+            if (watch?.isTimerStarted == true) Text('${watch?.remained} seconds'),
+          ],
+        ),
       ],
     );
   }
@@ -107,23 +166,74 @@ class _AuthButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final model = NotifierProvider.watch<AuthModel>(context);
-    // final child = model?.canStartAuth == false
-    //     ? const SizedBox(
-    //         width: 15,
-    //         height: 15,
-    //         child: CircularProgressIndicator(
-    //           strokeWidth: 2,
-    //         ),
-    //       )
-    //     : const Text("Войти");
-    return TextButton(
-      //onPressed: model?.canStartAuth == true ? () => model?.auth(context) : null,
-      onPressed: () {
-        Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.mainScreen);
-      },
-      style: AppButtonStyle.filledButton,
-      child: const Text('Log in'),
+    final model = NotifierProvider.read<AuthModel>(context);
+    final watch = NotifierProvider.watch<AuthModel>(context);
+    final child = watch?.isCodeChecking == true
+        ? const SizedBox(
+            width: 15,
+            height: 15,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 2,
+            ),
+          )
+        : Text(
+            'Log in',
+            style: AppTextStyle.buttonTextStyle,
+          );
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+        ),
+      ),
+      onPressed: watch?.isCodeChecking == false ? () => model?.validateCode(context) : null,
+      child: child,
+    );
+  }
+}
+
+class _ErrorMessageEmailWidget extends StatelessWidget {
+  const _ErrorMessageEmailWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final errorMessage = NotifierProvider.watch<AuthModel>(context)?.errorMessageEmail;
+
+    if (errorMessage == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Text(
+        errorMessage,
+        style: const TextStyle(color: Color.fromARGB(255, 185, 49, 39)),
+      ),
+    );
+  }
+}
+
+class _ErrorMessageCodeWidget extends StatelessWidget {
+  const _ErrorMessageCodeWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final errorMessage = NotifierProvider.watch<AuthModel>(context)?.errorMessageCode;
+
+    if (errorMessage == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Text(
+        errorMessage,
+        style: const TextStyle(color: Color.fromARGB(255, 185, 49, 39)),
+      ),
     );
   }
 }

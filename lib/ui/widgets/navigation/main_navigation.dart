@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:glass_of_water/Inherited/provider.dart';
+import 'package:glass_of_water/ui/widgets/auth/auth_model.dart';
 import 'package:glass_of_water/ui/widgets/auth/auth_widget.dart';
 import 'package:glass_of_water/ui/widgets/challenges/challenge_details.dart';
 import 'package:glass_of_water/ui/widgets/info/info_widget.dart';
+import 'package:glass_of_water/ui/widgets/main_screen/main_screen_model.dart';
 import 'package:glass_of_water/ui/widgets/main_screen/main_screen_widget.dart';
 import 'package:glass_of_water/ui/widgets/onboarding/onboarding.dart';
 import 'package:glass_of_water/ui/widgets/trip.dart/trip_widget.dart';
@@ -22,8 +25,14 @@ class MainNavigation {
 
   final routes = <String, Widget Function(BuildContext)>{
     'onboarding': (context) => const OnboardingWidget(),
-    'auth': (context) => const AuthWidget(),
-    '/': (context) => const MainScreenWidget(),
+    'auth': (context) => NotifierProvider(
+          model: AuthModel(),
+          child: const AuthWidget(),
+        ),
+    '/': (context) => NotifierProvider(
+          model: MainScreenModel(),
+          child: const MainScreenWidget(),
+        ),
     '/info': (context) => const InfoWidget(),
     '/trip': (context) => const TripWidget(),
     '/trip_results': (context) => const TripResultsWidget(),

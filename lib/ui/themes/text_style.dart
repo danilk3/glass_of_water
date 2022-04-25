@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 // ignore: avoid_classes_with_only_static_members
 abstract class AppTextStyle {
-  static final inputLabelStyle = GoogleFonts.roboto(fontSize: 18, color: const Color(0xFF212529));
+  static final inputLabelStyle = GoogleFonts.roboto(fontSize: 20, color: const Color(0xFF212529));
 
   static final boldTextStyle =
       GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF212529));
