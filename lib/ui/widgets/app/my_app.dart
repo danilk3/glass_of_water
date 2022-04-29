@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
+import 'package:glass_of_water/ui/widgets/app/my_app_model.dart';
 import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+  final MyAppModel model;
   static final mainNavigation = MainNavigation();
+
+  const MyApp({Key? key, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
        routes: mainNavigation.routes,
-       initialRoute: mainNavigation.initialRoute(false),
+       initialRoute: mainNavigation.initialRoute(model.isAuth),
     );
   }
 }

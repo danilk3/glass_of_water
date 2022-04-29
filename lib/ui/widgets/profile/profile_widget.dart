@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:glass_of_water/Inherited/provider.dart';
+import 'package:glass_of_water/data_providers/user_data_provider.dart';
 import 'package:glass_of_water/resources/resources.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
 import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
+import 'package:glass_of_water/ui/widgets/profile/profile_model.dart';
 import 'package:glass_of_water/ui/widgets/profile/radial_percent_widget.dart';
 
 class ProfileWidget extends StatefulWidget {
@@ -12,10 +15,37 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
+  final modelsuper = ProfileModel();
+  final _userDataProvider = UserDataProvider();
+
+  String _email = '';
+  String _name = '';
+  int _rate = 0;
+
   bool _status = false;
 
   @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  Future init() async {
+    final name = await _userDataProvider.getUserName() ?? '';
+    final email = await _userDataProvider.getUserEmail() ?? '';
+    final rate = int.parse(await _userDataProvider.getUserRate() ?? '0');
+
+    setState(() {
+      this._email = email;
+      this._name = name;
+      this._rate = rate;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.read<ProfileModel>(context);
+    final watch = NotifierProvider.watch<ProfileModel>(context);
     return Center(
       child: Column(
         children: [
@@ -25,7 +55,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             height: 75,
             child: RadialPercentWidget(
               // user`s rating
-              percent: 0.3,
+              percent: _rate / 100,
               lineWidth: 4,
               // user photo
               child: const Image(
@@ -37,19 +67,19 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           ),
           const SizedBox(height: 10),
           Text(
-            '30%',
+            '$_rate%',
             style: AppTextStyle.boldTextStyle,
           ),
           const SizedBox(height: 10),
           Text(
             // user`s name
-            'Alex Smith',
+            _name,
             style: AppTextStyle.profileInfoStyle,
           ),
           const SizedBox(height: 10),
           Text(
             // user`s email
-            'alexhero@mail.com',
+            _email,
             style: AppTextStyle.profileInfoStyle,
           ),
           const SizedBox(
@@ -125,7 +155,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        modelsuper.logOut(context);
+                      },
                       child: Row(
                         children: [
                           const Icon(
@@ -144,28 +176,32 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return AlertDialog(
-                              content: SizedBox(
-                                height: 120,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Are you sure you want to delete your account?',
-                                      style: AppTextStyle.profileOptionsStyle,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(height: 15),
-                                    ElevatedButton(
-                                      onPressed: () {},
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Colors.red,
-                                      ),
-                                      child: Text(
-                                        'Delete account',
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 290, horizontal: 20),
+                              child: AlertDialog(
+                                content: SizedBox(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Are you sure you want to delete your account?',
                                         style: AppTextStyle.profileOptionsStyle,
+                                        textAlign: TextAlign.center,
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(height: 20),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          modelsuper.deleteAccount(context);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.red,
+                                        ),
+                                        child: Text(
+                                          'Delete account',
+                                          style: AppTextStyle.profileOptionsStyle,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             );

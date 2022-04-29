@@ -7,6 +7,8 @@ import 'package:glass_of_water/ui/widgets/info/info_widget.dart';
 import 'package:glass_of_water/ui/widgets/main_screen/main_screen_model.dart';
 import 'package:glass_of_water/ui/widgets/main_screen/main_screen_widget.dart';
 import 'package:glass_of_water/ui/widgets/onboarding/onboarding.dart';
+import 'package:glass_of_water/ui/widgets/profile/profile_model.dart';
+import 'package:glass_of_water/ui/widgets/profile/profile_widget.dart';
 import 'package:glass_of_water/ui/widgets/trip.dart/trip_widget.dart';
 import 'package:glass_of_water/ui/widgets/trip_results/trip_results_widget.dart';
 
@@ -21,7 +23,8 @@ class MainNavigationRouteNames {
 }
 
 class MainNavigation {
-  String initialRoute(bool isAuth) => MainNavigationRouteNames.onboarding;
+  String initialRoute(bool isAuth) =>
+      isAuth ? MainNavigationRouteNames.mainScreen : MainNavigationRouteNames.onboarding;
 
   final routes = <String, Widget Function(BuildContext)>{
     'onboarding': (context) => const OnboardingWidget(),
@@ -33,7 +36,10 @@ class MainNavigation {
           model: MainScreenModel(),
           child: const MainScreenWidget(),
         ),
-    '/info': (context) => const InfoWidget(),
+    '/info': (context) => NotifierProvider(
+          model: ProfileModel(),
+          child: const ProfileWidget(),
+        ),
     '/trip': (context) => const TripWidget(),
     '/trip_results': (context) => const TripResultsWidget(),
     '/challenge_details': (context) {

@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:glass_of_water/data_providers/user_data_provider.dart';
 import 'package:glass_of_water/domain/api_client/api_client.dart';
 import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 
 class AuthModel extends ChangeNotifier {
+  final _userDataProvider = UserDataProvider();
   final _apiCLient = ApiClient();
 
   final emailTextController = TextEditingController();
@@ -77,21 +79,24 @@ class AuthModel extends ChangeNotifier {
 
     notifyListeners();
 
-    bool? isSend;
+    Map<String, dynamic>? userInfo;
 
     try {
-      isSend = await _apiCLient.validateCode(email: email, code: code);
+      userInfo = await _apiCLient.validateCode(email: email, code: code);
     } catch (e) {
       _errorMessageCode = 'Wrong one time password';
     }
 
     _isCodeChecking = false;
 
-    if (_errorMessageCode != null || isSend == false || isSend == false) {
+    if (_errorMessageCode != null || userInfo == null) {
       _errorMessageCode = 'Wrong one time password';
       notifyListeners();
       return;
     }
+
+    _userDataProvider.initUser(userInfo);
+
     await Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }
 

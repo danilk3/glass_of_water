@@ -38,7 +38,7 @@ class ApiClient {
     return false;
   }
 
-  Future<bool> validateCode({required String email, required String code}) async {
+  Future<Map<String, dynamic>?> validateCode({required String email, required String code}) async {
     final url = _makeUri('/auth/code', null);
 
     final paramenters = <String, dynamic>{
@@ -54,11 +54,18 @@ class ApiClient {
 
     final body = json.decode(await readResponse(response));
 
-    if (body['status'] as String == 'success') {
-      return true;
+    if (body['first'] as String == 'success') {
+      return body['second'];
     }
 
-    return false;
+    return null;
+  }
+
+  Future<void> deleteAccount({required int id}) async {
+    final url = _makeUri('/user/$id', null);
+
+    final request = await _client.deleteUrl(url);
+    await request.close();
   }
 
   Future<String> readResponse(HttpClientResponse response) {
