@@ -6,7 +6,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class TripResultsWidget extends StatefulWidget {
-  const TripResultsWidget({Key? key}) : super(key: key);
+  final numberOfSpills;
+  final elapsedMilliseconds;
+
+  const TripResultsWidget(
+      {Key? key, required this.numberOfSpills, required this.elapsedMilliseconds})
+      : super(key: key);
 
   @override
   State<TripResultsWidget> createState() => _TripResultsWidgetState();
@@ -17,6 +22,31 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    int hours = widget.elapsedMilliseconds ~/ 3600000;
+    int minutes = (widget.elapsedMilliseconds ~/ 60000) % 60;
+    int seconds = (widget.elapsedMilliseconds ~/ 1000) % 60;
+    String? hoursString;
+    String? minutesString;
+    String? secondsString;
+
+    if (hours < 10) {
+      hoursString = '0$hours';
+    } else {
+      hoursString = '$hours';
+    }
+
+    if (minutes < 10) {
+      minutesString = '0$minutes';
+    } else {
+      minutesString = '$minutes';
+    }
+
+    if (seconds < 10) {
+      secondsString = '0$seconds';
+    } else {
+      secondsString = '$seconds';
+    }
+
     return Scaffold(
       backgroundColor: AppColors.mainLightGrey,
       appBar: AppBar(
@@ -31,12 +61,14 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
             ),
             Column(
               children: <Widget>[
-                const _ChallengeResultWidget(),
-                const _StatisticsTextWidget(
-                  text: 'Rating of the trip',
+                //const _ChallengeResultWidget(),
+                _StatisticsTextWidget(
+                  text: 'Rating of the trip. Spills = ${widget.numberOfSpills}',
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                  ),
                   child: LinearPercentIndicator(
                     lineHeight: 25,
                     percent: 0.7,
@@ -62,7 +94,9 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                   height: 20,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                  ),
                   child: Row(
                     children: [
                       Text(
@@ -80,7 +114,9 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                   height: 20,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                  ),
                   child: Row(
                     children: [
                       Text(
@@ -88,7 +124,7 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                         style: AppTextStyle.profileOptionsStyle,
                       ),
                       Text(
-                        '1:55 h',
+                        '$hoursString:$minutesString:$secondsString',
                         style: AppTextStyle.profileOptionsBoldStyle,
                       )
                     ],
@@ -98,7 +134,9 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                   height: 20,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                  ),
                   child: Row(
                     children: [
                       Text(

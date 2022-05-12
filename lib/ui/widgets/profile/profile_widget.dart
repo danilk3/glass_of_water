@@ -132,7 +132,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: InkWell(
               onTap: () {
-                Navigator.of(context).pushNamed(MainNavigationRouteNames.info);
+                Navigator.of(context).pushNamed(MainNavigationRouteNames.aboutUs);
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

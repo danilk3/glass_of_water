@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:glass_of_water/Inherited/provider.dart';
+import 'package:glass_of_water/ui/friends/friends_widget.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
 import 'package:glass_of_water/ui/widgets/challenges/challenges_widget.dart';
 import 'package:glass_of_water/ui/widgets/history/history_widget.dart';
 import 'package:glass_of_water/ui/widgets/profile/profile_widget.dart';
+import 'package:glass_of_water/ui/widgets/trip.dart/trip_model.dart';
 import 'package:glass_of_water/ui/widgets/trip.dart/trip_widget.dart';
 
 class MainScreenWidget extends StatefulWidget {
@@ -16,10 +19,13 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
   int _selectedTab = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    const TripWidget(),
+    NotifierProvider(
+      model: TripModel(),
+      child: const TripWidget(),
+    ),
     ChallengesWidget(),
     HistoryWidget(),
-    const Center(child: Text('Friends')),
+    const FriendsWidget(),
     const ProfileWidget(),
   ];
 

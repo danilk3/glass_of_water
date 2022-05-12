@@ -61,6 +61,19 @@ class ApiClient {
     return null;
   }
 
+  Future<List> getAllUsers() async {
+    final url = _makeUri('/auth/users', null);
+
+    final request = await _client.getUrl(url);
+    request.headers.set('Content-type', 'application/json');
+
+    HttpClientResponse response = await request.close();
+
+    final body = json.decode(await readResponse(response));
+
+    return body;
+  }
+
   Future<void> deleteAccount({required int id}) async {
     final url = _makeUri('/user/$id', null);
 
