@@ -1,4 +1,3 @@
-
 import 'package:glass_of_water/data_providers/user_data_provider.dart';
 
 class MyAppModel {

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'dart:io';
 
 class ApiClient {
@@ -61,6 +62,63 @@ class ApiClient {
     return null;
   }
 
+  Future<void> updateRate(int id, int newRate) async {
+    final url = _makeUri('/user/$id', null);
+
+    final paramenters = <String, dynamic>{'rate': newRate.toString()};
+
+    final headers = {
+      'Content-Type': 'application/json'
+    };
+
+    await http.put(url, headers: headers, body: jsonEncode(paramenters));
+  }
+
+  Future<void> addTrip(
+      int id, int rate, int numberOfGlasses, String tripTime, String startTime) async {
+    final url = _makeUri('/user/$id/trips', null);
+
+    final paramenters = <String, dynamic>{
+      'rate': rate,
+      'countOfGlasses': numberOfGlasses,
+      'time': tripTime,
+      'averageSpeed': 0,
+      'startTime': startTime
+    };
+
+    final request = await _client.postUrl(url);
+    request.headers.set('Content-type', 'application/json');
+    request.write(jsonEncode(paramenters));
+
+    HttpClientResponse response = await request.close();
+  }
+
+  Future<List> getAllTrips(int id) async {
+    final url = _makeUri('/user/$id/trips', null);
+
+    final request = await _client.getUrl(url);
+    request.headers.set('Content-type', 'application/json');
+
+    HttpClientResponse response = await request.close();
+
+    final body = json.decode(await readResponse(response));
+
+    return body;
+  }
+
+  Future<List> getTrip(int id, int tripId) async {
+    final url = _makeUri('/user/$id/trips/$tripId', null);
+
+    final request = await _client.getUrl(url);
+    request.headers.set('Content-type', 'application/json');
+
+    HttpClientResponse response = await request.close();
+
+    final body = json.decode(await readResponse(response));
+
+    return body;
+  }
+
   Future<List> getAllUsers() async {
     final url = _makeUri('/auth/users', null);
 
@@ -74,7 +132,7 @@ class ApiClient {
     return body;
   }
 
-  Future<void> deleteAccount({required int id}) async {
+  Future<void> deleteAccount(int id) async {
     final url = _makeUri('/user/$id', null);
 
     final request = await _client.deleteUrl(url);

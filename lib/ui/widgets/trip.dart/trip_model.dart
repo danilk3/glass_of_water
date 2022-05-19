@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'package:ml_linalg/linalg.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 class TripModel extends ChangeNotifier {
-  int _windowCounter = 0;
   double? _gammaAngle;
   double? _thetaAngle;
   double _phiAngle = 0;
@@ -20,16 +20,16 @@ class TripModel extends ChangeNotifier {
   int get numberOfSpills => _numberOfSpills;
   final _stopwatch = Stopwatch();
 
-  Future<void> startTrip() async {
+  void startTrip() {
+    int _windowCounter = 0;
     _stopwatch.start();
     _numberOfSpills = 0;
     _isTripStarted = true;
     notifyListeners();
-    print('TRIP STARTED');
     double x, y, z, x1, y1, z1;
     x = y = z = x1 = y1 = z1 = 0;
     var subscription = accelerometerEvents.listen(null);
-    subscription.onData((event) {
+    subscription.onData((event) async {
       ++_windowCounter;
 
       if (_windowCounter < 10) {
@@ -44,9 +44,6 @@ class TripModel extends ChangeNotifier {
         _thetaAngle = asin(y1 / 9.8);
         _gammaAngle = atan(-x1 / z1);
         x = y = z = 0;
-
-        print(_thetaAngle);
-        print(_gammaAngle);
       } else if (_windowCounter == 101) {
         _phiAngle /= 9;
         _windowCounter = 0;
@@ -66,7 +63,7 @@ class TripModel extends ChangeNotifier {
     });
   }
 
-  Future<void> _calculateRotationMatrix() async {
+  void _calculateRotationMatrix() {
     final firstMatrix = Matrix.fromList([
       [cos(_gammaAngle!), 0, -sin(_gammaAngle!)],
       [0, 1, 0],
@@ -83,25 +80,24 @@ class TripModel extends ChangeNotifier {
       [0, 0, 1]
     ]);
     _rotationMatrix = firstMatrix * secondMatrix * thirdMatrix;
-
-    print(_rotationMatrix);
   }
 
-  Future<void> _listenMovements() async {
+  void _listenMovements() {
+    int _windowCounter = 0;
     double x, y, z;
     x = y = z = 0;
+    int matrixCounter = 0;
     var subscription = accelerometerEvents.listen(null);
     // ignore: cascade_invocations
     subscription.onData((event) async {
-
       if (!_isTripStarted) {
         subscription.cancel();
       }
 
       ++_windowCounter;
       if (_windowCounter == 10) {
+        ++matrixCounter;
         var currentWindow = Vector.fromList([x / 10, y / 10, z / 10]) * _rotationMatrix!;
-        print(currentWindow);
         x = y = z = 0;
         _windowCounter = 0;
 
@@ -113,23 +109,22 @@ class TripModel extends ChangeNotifier {
           ++_numberOfSpills;
           _shouldSpill = true;
           notifyListeners();
-          await Future.delayed(const Duration(seconds: 4));
+          await Future.delayed(Duration(seconds: 1));
           _shouldSpill = false;
           notifyListeners();
         } else if ((currentWindow[0] - _previousWindow![0]).abs() >= 1.2) {
           ++_numberOfSpills;
           _shouldSpill = true;
           notifyListeners();
-          await Future.delayed(const Duration(seconds: 4));
+          await Future.delayed(Duration(seconds: 1));
           _shouldSpill = false;
           notifyListeners();
         }
-
-        // else if(false /*w(k) - w(s)*/) {
-        //   // всплеск
-        // }
-
         _previousWindow = currentWindow;
+        if (matrixCounter == 1000) {
+          matrixCounter = 0;
+          startTrip();
+        }
       } else {
         x += event.x;
         y += event.y;
@@ -138,13 +133,13 @@ class TripModel extends ChangeNotifier {
     });
   }
 
-  Future<void> endTrip(BuildContext context) async {
+  void endTrip(BuildContext context) {
     final elapsedMilliseconds = _stopwatch.elapsedMilliseconds;
     _stopwatch.stop();
     _stopwatch.reset();
-    print('TRIP ENDED');
     _isTripStarted = false;
     notifyListeners();
-    await Navigator.of(context).pushNamed(MainNavigationRouteNames.tripResults, arguments: [_numberOfSpills, elapsedMilliseconds]);
+    Navigator.of(context).pushNamed(MainNavigationRouteNames.tripResults,
+        arguments: [_numberOfSpills, elapsedMilliseconds]);
   }
 }

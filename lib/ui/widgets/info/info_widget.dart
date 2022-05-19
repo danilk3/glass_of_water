@@ -28,7 +28,7 @@ class InfoWidget extends StatelessWidget {
               height: 20,
             ),
             Text(
-              "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+              'This mobile application will help users to track the accuracy of driving. It will be useful for people who do not have much driving experience, or people who want to evaluate their driving skills.',
               style: AppTextStyle.profileInfoStyle,
             ),
             const SizedBox(
@@ -44,7 +44,7 @@ class InfoWidget extends StatelessWidget {
               height: 20,
             ),
             Text(
-              "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+              'We are a team of students from the Higher School of Economics, Faculty of Computer Science. Made this app as part of a course project.',
               style: AppTextStyle.profileInfoStyle,
             ),
             Spacer(),

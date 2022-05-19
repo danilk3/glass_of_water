@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:glass_of_water/data_providers/user_data_provider.dart';
 import 'package:glass_of_water/domain/api_client/api_client.dart';
@@ -28,7 +27,7 @@ class AuthModel extends ChangeNotifier {
   bool get isCodeChecking => _isCodeChecking;
 
   Future<void> sendEmail(BuildContext context) async {
-    final email = emailTextController.text;
+    final email = emailTextController.text.trim();
 
     if (email.isEmpty ||
         !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -64,8 +63,8 @@ class AuthModel extends ChangeNotifier {
   }
 
   Future<void> validateCode(BuildContext context) async {
-    final email = emailTextController.text;
-    final code = codeTextController.text;
+    final email = emailTextController.text.trim();
+    final code = codeTextController.text.trim();
 
     if (code.isEmpty || code.length != 4) {
       _errorMessageCode = 'Wrong one time password';

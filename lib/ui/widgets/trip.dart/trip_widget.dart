@@ -1,12 +1,41 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/Inherited/provider.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
-import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 import 'package:glass_of_water/ui/widgets/trip.dart/trip_model.dart';
 import 'package:lottie/lottie.dart';
 
-class TripWidget extends StatelessWidget {
+class TripWidget extends StatefulWidget {
   const TripWidget({Key? key}) : super(key: key);
+
+  @override
+  State<TripWidget> createState() => _TripWidgetState();
+}
+
+class _TripWidgetState extends State<TripWidget> with SingleTickerProviderStateMixin {
+  bool isSplashing = false;
+
+  void startTimer() {
+  var _start = 5;
+  const oneSec = const Duration(seconds: 1);
+  final _timer =  Timer.periodic(
+    oneSec,
+    (Timer timer) {
+      if (_start == 0) {
+        setState(() {
+          print('timer over');
+          isSplashing = false;
+          timer.cancel();
+        });
+      } else {
+        setState(() {
+          _start--;
+        });
+      }
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +44,15 @@ class TripWidget extends StatelessWidget {
       children: [
         SizedBox(
           height: 450,
-          child: (watch?.shouldSpill == true)
-              ? Lottie.asset('animations/Splash_short.json')
+          child: (watch?.shouldSpill == true || isSplashing == true)
+              ? Lottie.asset(
+                  'animations/Splash_short.json',
+                  onLoaded: (comp) {
+                    print('hete');
+                    isSplashing = true;
+                    startTimer();
+                  },
+                )
               : Lottie.asset('animations/bubbles.json'),
         ),
         if (watch?.isTripStarted == true)
@@ -57,41 +93,41 @@ class _StartTripButtonWidget extends StatelessWidget {
             ),
             onPressed: () {
               showDialog(
-                          context: context,
-                          builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 210, horizontal: 20),
-                              child: AlertDialog(
-                                content: SizedBox(
-                                  child: Column(
-                                    children: [
-                                      const SizedBox(height: 15),
-                                      Text(
-                                        'Before you start your journey, make sure that your phone is secured to the holder or placed in a fixed position.',
-                                        style: AppTextStyle.profileOptionsStyle,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      const SizedBox(height: 20),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          model?.startTrip();
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.blue,
-                                        ),
-                                        child: Text(
-                                          'Accept',
-                                          style: AppTextStyle.profileOptionsStyle,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                context: context,
+                builder: (context) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 210, horizontal: 20),
+                    child: AlertDialog(
+                      content: SizedBox(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 15),
+                            Text(
+                              'Before you start your journey, make sure that your phone is secured to the holder or placed in a fixed position.',
+                              style: AppTextStyle.profileOptionsStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                model?.startTrip();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.blue,
                               ),
-                            );
-                          },
-                        );
+                              child: Text(
+                                'Accept',
+                                style: AppTextStyle.profileOptionsStyle,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
             },
             child: Text(
               'Start Trip!',

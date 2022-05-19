@@ -9,11 +9,13 @@ class ProfileModel extends ChangeNotifier {
 
   void logOut(BuildContext context) {
     _userDataProvider.logOut();
-    Navigator.of(context).pushNamed(MainNavigationRouteNames.auth);
+    Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.auth);
   }
 
   Future deleteAccount(BuildContext context) async {
-    await _apiClient.deleteAccount(id: int.parse(await _userDataProvider.getUserId() ?? '0'));
-    await Navigator.of(context).pushNamed(MainNavigationRouteNames.auth);
+    await _apiClient.deleteAccount(int.parse(await _userDataProvider.getUserId() ?? '0'));
+    _userDataProvider.logOut();
+    Navigator.of(context).pop();
+    await Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.auth);
   }
 }

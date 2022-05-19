@@ -22,8 +22,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   String _name = '';
   int _rate = 0;
 
-  bool _status = false;
-
   @override
   void initState() {
     super.initState();
@@ -87,49 +85,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Show my trips to friends',
-                  style: AppTextStyle.profileOptionsStyle,
-                ),
-                Switch(
-                  value: _status,
-                  onChanged: (val) {
-                    setState(() {
-                      _status = val;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Dark theme',
-                  style: AppTextStyle.profileOptionsStyle,
-                ),
-                Switch(
-                  value: _status,
-                  onChanged: (val) {
-                    setState(() {
-                      _status = val;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: InkWell(
               onTap: () {
                 Navigator.of(context).pushNamed(MainNavigationRouteNames.aboutUs);
@@ -177,7 +132,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                           context: context,
                           builder: (context) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 290, horizontal: 20),
+                              padding: const EdgeInsets.symmetric(vertical: 260, horizontal: 20),
                               child: AlertDialog(
                                 content: SizedBox(
                                   child: Column(

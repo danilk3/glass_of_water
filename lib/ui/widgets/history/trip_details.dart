@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/data_providers/user_data_provider.dart';
 import 'package:glass_of_water/domain/api_client/api_client.dart';
+import 'package:glass_of_water/models/trip.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -15,19 +15,17 @@ class DrivingAdvice {
   });
 }
 
-class TripResultsWidget extends StatefulWidget {
-  final numberOfSpills;
-  final elapsedMilliseconds;
-  final _apiClient = ApiClient();
+class TripDetailsWidget extends StatefulWidget {
 
-  TripResultsWidget({Key? key, required this.numberOfSpills, required this.elapsedMilliseconds})
-      : super(key: key);
+  final Trip trip; 
+
+  TripDetailsWidget({Key? key, required this.trip}) : super(key: key);
 
   @override
-  State<TripResultsWidget> createState() => _TripResultsWidgetState();
+  State<TripDetailsWidget> createState() => _TripDetailsWidgetState();
 }
 
-class _TripResultsWidgetState extends State<TripResultsWidget> {
+class _TripDetailsWidgetState extends State<TripDetailsWidget> {
   final advices = [
     DrivingAdvice(
       title: 'Think safety first',
@@ -72,65 +70,7 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
   ];
 
   int _index = 0;
-  double percentRate = 0;
-  String? hoursString;
-  String? minutesString;
-  String? secondsString;
-
-  Future<void> updateRate() async {
-    int userId = int.parse(await UserDataProvider().getUserId() ?? '0');
-    int rate = int.parse(await UserDataProvider().getUserRate() ?? '0');
-    int newRate = (rate + (percentRate * 100.0).toInt()) ~/ 2;
-    await widget._apiClient.updateRate(userId, newRate);
-
-    if (rate == 0) {
-      await UserDataProvider().setUserRate((percentRate * 100.0).toInt().toString());
-    } else {
-      await UserDataProvider().setUserRate(newRate.toString());
-    }
-  }
-
-  Future<void> sendTrip() async {
-    DateTime now = DateTime.now();
-    String convertedDateTime =
-        "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
-    await widget._apiClient.addTrip(
-      int.parse(await UserDataProvider().getUserId() ?? '0'),
-      (percentRate * 100.0).toInt(),
-      widget.numberOfSpills,
-      '$hoursString:$minutesString:$secondsString',
-      convertedDateTime,
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    final int hours = widget.elapsedMilliseconds ~/ 3600000;
-    final int minutes = (widget.elapsedMilliseconds ~/ 60000) % 60;
-    final int seconds = (widget.elapsedMilliseconds ~/ 1000) % 60;
-    if (hours < 10) {
-      hoursString = '0$hours';
-    } else {
-      hoursString = '$hours';
-    }
-
-    if (minutes < 10) {
-      minutesString = '0$minutes';
-    } else {
-      minutesString = '$minutes';
-    }
-
-    if (seconds < 10) {
-      secondsString = '0$seconds';
-    } else {
-      secondsString = '$seconds';
-    }
-
-    percentRate = (1 - (widget.numberOfSpills - hours * 2 - minutes ~/ 30) / 100) * 1.0;
-    sendTrip();
-    updateRate();
-  }
+  final _apiClient = ApiClient();
 
   @override
   Widget build(BuildContext context) {
@@ -158,16 +98,16 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                   ),
                   child: LinearPercentIndicator(
                     lineHeight: 25,
-                    percent: percentRate,
+                    percent: widget.trip.rate / 100.0,
                     center: Text(
-                      '${percentRate * 100.0}%',
+                      '${widget.trip.rate}%',
                       style: const TextStyle(),
                     ),
-                    progressColor: AppColors.getProgressColor(percentRate),
+                    progressColor: AppColors.getProgressColor(widget.trip.rate / 100.0),
                   ),
                 ),
                 _StatisticsTextWidget(
-                  text: 'Number of glass spills: ${widget.numberOfSpills}',
+                  text: 'Number of glass spills: ${widget.trip.numberOfGlasses}',
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -180,7 +120,27 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                         style: AppTextStyle.profileOptionsStyle,
                       ),
                       Text(
-                        '$hoursString:$minutesString:$secondsString',
+                        '${widget.trip.tripTime}',
+                        style: AppTextStyle.profileOptionsBoldStyle,
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Start time: ',
+                        style: AppTextStyle.profileOptionsStyle,
+                      ),
+                      Text(
+                        '${widget.trip.startTime}',
                         style: AppTextStyle.profileOptionsBoldStyle,
                       )
                     ],

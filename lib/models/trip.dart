@@ -1,11 +1,13 @@
 class Trip {
   Trip({
-    required this.id,
-    required this.roadImage,
-    required this.date,
+    required this.rate,
+    required this.numberOfGlasses,
+    required this.tripTime,
+    required this.startTime,
   });
   
-  final int id;
-  final String roadImage;
-  final String date;
+  final int rate;
+  final int numberOfGlasses;
+  final String tripTime;
+  final String startTime;
 }
