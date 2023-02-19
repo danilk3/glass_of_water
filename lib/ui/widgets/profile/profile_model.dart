@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/data_providers/user_data_provider.dart';
-import 'package:glass_of_water/domain/api_client/api_client.dart';
+import 'package:glass_of_water/domain/api_client.dart';
 import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 
 class ProfileModel extends ChangeNotifier {

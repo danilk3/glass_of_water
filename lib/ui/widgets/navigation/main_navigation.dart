@@ -3,7 +3,6 @@ import 'package:glass_of_water/Inherited/provider.dart';
 import 'package:glass_of_water/models/trip.dart';
 import 'package:glass_of_water/ui/widgets/auth/auth_model.dart';
 import 'package:glass_of_water/ui/widgets/auth/auth_widget.dart';
-import 'package:glass_of_water/ui/widgets/challenges/challenge_details.dart';
 import 'package:glass_of_water/ui/widgets/history/trip_details.dart';
 import 'package:glass_of_water/ui/widgets/info/info_widget.dart';
 import 'package:glass_of_water/ui/widgets/main_screen/main_screen_widget.dart';
@@ -20,15 +19,15 @@ class MainNavigationRouteNames {
   static const info = '/info';
   static const onboarding = 'onboarding';
   static const auth = 'auth';
-  static const challengeDetails = '/challenge_details';
   static const trip = '/trip';
   static const tripResults = '/trip_results';
   static const aboutUs = '/info/about_us';
 }
 
 class MainNavigation {
-  String initialRoute(bool isAuth) =>
-      isAuth ? MainNavigationRouteNames.mainScreen : MainNavigationRouteNames.onboarding;
+  String initialRoute(bool isAuth) => isAuth
+      ? MainNavigationRouteNames.mainScreen
+      : MainNavigationRouteNames.onboarding;
 
   final routes = <String, Widget Function(BuildContext)>{
     'onboarding': (context) => const OnboardingWidget(),
@@ -56,13 +55,6 @@ class MainNavigation {
         numberOfSpills: arg[0],
         elapsedMilliseconds: arg[1],
       );
-    },
-    '/challenge_details': (context) {
-      final arg = ModalRoute.of(context)!.settings.arguments;
-      if (arg is int) {
-        return ChallengeDetailsWidget(challengeId: arg);
-      }
-      return const ChallengeDetailsWidget(challengeId: 0);
     }
   };
 }

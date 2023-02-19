@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/domain/api_client/api_client.dart';
+import 'package:glass_of_water/domain/api_client.dart';
 
 class FriendsWidget extends StatefulWidget {
   const FriendsWidget({Key? key}) : super(key: key);

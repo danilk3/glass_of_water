@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:glass_of_water/data_providers/user_data_provider.dart';
-import 'package:glass_of_water/domain/api_client/api_client.dart';
+import 'package:glass_of_water/domain/api_client.dart';
 import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 
 class AuthModel extends ChangeNotifier {
@@ -48,6 +48,7 @@ class AuthModel extends ChangeNotifier {
     try {
       isSend = await _apiCLient.sendEmail(email: email);
     } catch (e) {
+      // TODO: поставить таймаут
       _errorMessageEmail = 'There was an error sending one time password';
     }
 

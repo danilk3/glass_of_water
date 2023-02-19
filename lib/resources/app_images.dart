@@ -18,5 +18,4 @@ class AppImages {
   static const String onboardingImage2 = 'images/onboarding_image_2.png';
   static const String onboardingImage3 = 'images/onboarding_image_3.png';
   static const String road = 'images/road.png';
-  static const String testingRoadMap = 'images/testing_road_map.png';
 }

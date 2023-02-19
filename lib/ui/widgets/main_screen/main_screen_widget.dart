@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:glass_of_water/Inherited/provider.dart';
 import 'package:glass_of_water/ui/friends/friends_widget.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
-import 'package:glass_of_water/ui/widgets/challenges/challenges_widget.dart';
 import 'package:glass_of_water/ui/widgets/history/history_widget.dart';
 import 'package:glass_of_water/ui/widgets/profile/profile_widget.dart';
 import 'package:glass_of_water/ui/widgets/trip.dart/trip_model.dart';
@@ -23,7 +22,6 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
       model: TripModel(),
       child: const TripWidget(),
     ),
-    ChallengesWidget(),
     HistoryWidget(),
     const FriendsWidget(),
     const ProfileWidget(),
@@ -55,10 +53,6 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
           BottomNavigationBarItem(
             icon: Icon(Icons.directions_car),
             label: 'Trip',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.checklist_sharp),
-            label: 'Challenges',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history_outlined),

@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'dart:io';
+
+import 'package:http/http.dart' as http;
 
 class ApiClient {
   final _client = HttpClient();
-  static const _host = 'https://glass-of-water.herokuapp.com';
+  static const _host = 'http://51.250.91.38:8080';
 
   Uri _makeUri(String path, Map<String, dynamic>? parametrs) {
     final uri = Uri.parse('$_host$path');
@@ -39,7 +40,8 @@ class ApiClient {
     return false;
   }
 
-  Future<Map<String, dynamic>?> validateCode({required String email, required String code}) async {
+  Future<Map<String, dynamic>?> validateCode(
+      {required String email, required String code}) async {
     final url = _makeUri('/auth/code', null);
 
     final paramenters = <String, dynamic>{
@@ -67,15 +69,13 @@ class ApiClient {
 
     final paramenters = <String, dynamic>{'rate': newRate.toString()};
 
-    final headers = {
-      'Content-Type': 'application/json'
-    };
+    final headers = {'Content-Type': 'application/json'};
 
     await http.put(url, headers: headers, body: jsonEncode(paramenters));
   }
 
-  Future<void> addTrip(
-      int id, int rate, int numberOfGlasses, String tripTime, String startTime) async {
+  Future<void> addTrip(int id, int rate, int numberOfGlasses, String tripTime,
+      String startTime) async {
     final url = _makeUri('/user/$id/trips', null);
 
     final paramenters = <String, dynamic>{
@@ -90,7 +90,7 @@ class ApiClient {
     request.headers.set('Content-type', 'application/json');
     request.write(jsonEncode(paramenters));
 
-    HttpClientResponse response = await request.close();
+    await request.close();
   }
 
   Future<List> getAllTrips(int id) async {
@@ -142,9 +142,8 @@ class ApiClient {
   Future<String> readResponse(HttpClientResponse response) {
     final completer = Completer<String>();
     final contents = StringBuffer();
-    response.transform(utf8.decoder).listen((data) {
-      contents.write(data);
-    }, onDone: () => completer.complete(contents.toString()));
+    response.transform(utf8.decoder).listen(contents.write,
+        onDone: () => completer.complete(contents.toString()));
     return completer.future;
   }
 }

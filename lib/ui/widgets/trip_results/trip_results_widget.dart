@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/data_providers/user_data_provider.dart';
-import 'package:glass_of_water/domain/api_client/api_client.dart';
+import 'package:glass_of_water/domain/api_client.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
