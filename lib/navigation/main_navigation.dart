@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/Inherited/provider.dart';
 import 'package:glass_of_water/models/trip.dart';
 import 'package:glass_of_water/ui/widgets/auth/auth_model.dart';
 import 'package:glass_of_water/ui/widgets/auth/auth_widget.dart';
-import 'package:glass_of_water/ui/widgets/history/trip_details.dart';
 import 'package:glass_of_water/ui/widgets/info/info_widget.dart';
+import 'package:glass_of_water/ui/widgets/main_screen/main_screen_model.dart';
 import 'package:glass_of_water/ui/widgets/main_screen/main_screen_widget.dart';
 import 'package:glass_of_water/ui/widgets/onboarding/onboarding.dart';
-import 'package:glass_of_water/ui/widgets/profile/profile_model.dart';
-import 'package:glass_of_water/ui/widgets/profile/profile_widget.dart';
-import 'package:glass_of_water/ui/widgets/trip.dart/trip_model.dart';
-import 'package:glass_of_water/ui/widgets/trip.dart/trip_widget.dart';
+import 'package:glass_of_water/ui/widgets/trip_details/trip_details.dart';
+import 'package:glass_of_water/ui/widgets/trip_details/trip_details_model.dart';
+import 'package:glass_of_water/ui/widgets/trip_results/trip_results_model.dart';
 import 'package:glass_of_water/ui/widgets/trip_results/trip_results_widget.dart';
+import 'package:provider/provider.dart';
 
 class MainNavigationRouteNames {
   static const tripDetails = '/trip_details';
@@ -19,7 +18,6 @@ class MainNavigationRouteNames {
   static const info = '/info';
   static const onboarding = 'onboarding';
   static const auth = 'auth';
-  static const trip = '/trip';
   static const tripResults = '/trip_results';
   static const aboutUs = '/info/about_us';
 }
@@ -30,30 +28,31 @@ class MainNavigation {
       : MainNavigationRouteNames.onboarding;
 
   final routes = <String, Widget Function(BuildContext)>{
-    'onboarding': (context) => const OnboardingWidget(),
-    '/trip_details': (context) {
+    MainNavigationRouteNames.onboarding: (context) => const OnboardingWidget(),
+    MainNavigationRouteNames.tripDetails: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments as Trip;
-      return TripDetailsWidget(trip: arg);
+      return ChangeNotifierProvider(
+        create: (_) => TripDetailsModel(),
+        child: TripDetailsWidget(trip: arg),
+      );
     },
-    'auth': (context) => NotifierProvider(
-          model: AuthModel(),
+    MainNavigationRouteNames.auth: (context) => ChangeNotifierProvider(
+          create: (_) => AuthModel(),
           child: const AuthWidget(),
         ),
-    '/': (context) => const MainScreenWidget(),
-    '/info': (context) => NotifierProvider(
-          model: ProfileModel(),
-          child: const ProfileWidget(),
+    MainNavigationRouteNames.mainScreen: (context) => ChangeNotifierProvider(
+          create: (_) => MainScreenModel(),
+          child: const MainScreenWidget(),
         ),
-    '/info/about_us': (context) => const InfoWidget(),
-    '/trip': (context) => NotifierProvider(
-          model: TripModel(),
-          child: const TripWidget(),
-        ),
-    '/trip_results': (context) {
+    MainNavigationRouteNames.aboutUs: (context) => const InfoWidget(),
+    MainNavigationRouteNames.tripResults: (context) {
       final arg = ModalRoute.of(context)!.settings.arguments as List;
-      return TripResultsWidget(
-        numberOfSpills: arg[0],
-        elapsedMilliseconds: arg[1],
+      return ChangeNotifierProvider(
+        create: (_) => TripResultsModel(),
+        child: TripResultsWidget(
+          numberOfSpills: arg[0],
+          elapsedMilliseconds: arg[1],
+        ),
       );
     }
   };

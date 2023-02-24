@@ -20,7 +20,10 @@ class TripResultsWidget extends StatefulWidget {
   final elapsedMilliseconds;
   final _apiClient = ApiClient();
 
-  TripResultsWidget({Key? key, required this.numberOfSpills, required this.elapsedMilliseconds})
+  TripResultsWidget(
+      {Key? key,
+      required this.numberOfSpills,
+      required this.elapsedMilliseconds})
       : super(key: key);
 
   @override
@@ -84,7 +87,8 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
     await widget._apiClient.updateRate(userId, newRate);
 
     if (rate == 0) {
-      await UserDataProvider().setUserRate((percentRate * 100.0).toInt().toString());
+      await UserDataProvider()
+          .setUserRate((percentRate * 100.0).toInt().toString());
     } else {
       await UserDataProvider().setUserRate(newRate.toString());
     }
@@ -127,7 +131,8 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
       secondsString = '$seconds';
     }
 
-    percentRate = (1 - (widget.numberOfSpills - hours * 2 - minutes ~/ 30) / 100) * 1.0;
+    percentRate =
+        (1 - (widget.numberOfSpills - hours * 2 - minutes ~/ 30) / 100) * 1.0;
     sendTrip();
     updateRate();
   }
@@ -200,7 +205,8 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                         scale: i == _index ? 1 : 0.9,
                         child: Card(
                           elevation: 6,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Center(
@@ -211,7 +217,9 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                                   ),
                                   Text(
                                     advices[i].title,
-                                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(

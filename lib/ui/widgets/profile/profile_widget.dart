@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/Inherited/provider.dart';
-import 'package:glass_of_water/data_providers/user_data_provider.dart';
 import 'package:glass_of_water/resources/resources.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
-import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 import 'package:glass_of_water/ui/widgets/profile/profile_model.dart';
 import 'package:glass_of_water/ui/widgets/profile/radial_percent_widget.dart';
+import 'package:provider/provider.dart';
+
+import '../../../navigation/main_navigation.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({Key? key}) : super(key: key);
@@ -15,9 +15,6 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
-  final modelsuper = ProfileModel();
-  final _userDataProvider = UserDataProvider();
-
   String _email = '';
   String _name = '';
   int _rate = 0;
@@ -25,25 +22,26 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   void initState() {
     super.initState();
-    init();
+    asyncInit();
   }
 
-  Future init() async {
-    final name = await _userDataProvider.getUserName() ?? '';
-    final email = await _userDataProvider.getUserEmail() ?? '';
-    final rate = int.parse(await _userDataProvider.getUserRate() ?? '0');
+  Future<void> asyncInit() async {
+    await context.read<ProfileModel>().getUserInfo();
+
+    final name = context.read<ProfileModel>().name;
+    final email = context.read<ProfileModel>().email;
+    final rate = context.read<ProfileModel>().rate;
 
     setState(() {
-      this._email = email;
-      this._name = name;
-      this._rate = rate;
+      _email = email;
+      _name = name;
+      _rate = rate;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<ProfileModel>(context);
-    final watch = NotifierProvider.watch<ProfileModel>(context);
+    final model = context.read<ProfileModel>();
     return Center(
       child: Column(
         children: [
@@ -87,7 +85,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: InkWell(
               onTap: () {
-                Navigator.of(context).pushNamed(MainNavigationRouteNames.aboutUs);
+                Navigator.of(context)
+                    .pushNamed(MainNavigationRouteNames.aboutUs);
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,7 +110,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        modelsuper.logOut(context);
+                        model.logOut(context);
                       },
                       child: Row(
                         children: [
@@ -132,7 +131,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                           context: context,
                           builder: (context) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 260, horizontal: 20),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 260, horizontal: 20),
                               child: AlertDialog(
                                 content: SizedBox(
                                   child: Column(
@@ -145,14 +145,15 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                       const SizedBox(height: 20),
                                       ElevatedButton(
                                         onPressed: () {
-                                          modelsuper.deleteAccount(context);
+                                          model.deleteAccount(context);
                                         },
                                         style: ElevatedButton.styleFrom(
                                           primary: Colors.red,
                                         ),
                                         child: Text(
                                           'Delete account',
-                                          style: AppTextStyle.profileOptionsStyle,
+                                          style:
+                                              AppTextStyle.profileOptionsStyle,
                                         ),
                                       ),
                                     ],

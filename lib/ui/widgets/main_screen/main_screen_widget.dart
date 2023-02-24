@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/Inherited/provider.dart';
-import 'package:glass_of_water/ui/friends/friends_widget.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
+import 'package:glass_of_water/ui/widgets/friends/friends_model.dart';
+import 'package:glass_of_water/ui/widgets/history/history_model.dart';
 import 'package:glass_of_water/ui/widgets/history/history_widget.dart';
+import 'package:glass_of_water/ui/widgets/profile/profile_model.dart';
 import 'package:glass_of_water/ui/widgets/profile/profile_widget.dart';
-import 'package:glass_of_water/ui/widgets/trip.dart/trip_model.dart';
 import 'package:glass_of_water/ui/widgets/trip.dart/trip_widget.dart';
+import 'package:provider/provider.dart';
+
+import '../friends/friends_widget.dart';
+import '../trip.dart/trip_model.dart';
 
 class MainScreenWidget extends StatefulWidget {
   const MainScreenWidget({Key? key}) : super(key: key);
@@ -18,13 +22,22 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
   int _selectedTab = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    NotifierProvider(
-      model: TripModel(),
+    ChangeNotifierProvider(
+      create: (_) => TripModel(),
       child: const TripWidget(),
     ),
-    HistoryWidget(),
-    const FriendsWidget(),
-    const ProfileWidget(),
+    ChangeNotifierProvider(
+      create: (_) => HistoryModel(),
+      child: const HistoryWidget(),
+    ),
+    ChangeNotifierProvider(
+      create: (_) => FriendsModel(),
+      child: const FriendsWidget(),
+    ),
+    ChangeNotifierProvider(
+      create: (_) => ProfileModel(),
+      child: const ProfileWidget(),
+    )
   ];
 
   void onSelectedTab(int index) {

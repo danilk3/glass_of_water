@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
 import 'package:glass_of_water/ui/widgets/app/my_app_model.dart';
-import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
+
+import '../../../navigation/main_navigation.dart';
 
 class MyApp extends StatelessWidget {
   final MyAppModel model;
@@ -23,8 +24,8 @@ class MyApp extends StatelessWidget {
           unselectedItemColor: Colors.white,
         ),
       ),
-       routes: mainNavigation.routes,
-       initialRoute: mainNavigation.initialRoute(model.isAuth),
+      routes: mainNavigation.routes,
+      initialRoute: mainNavigation.initialRoute(model.isAuth),
     );
   }
 }

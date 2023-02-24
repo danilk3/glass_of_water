@@ -12,6 +12,7 @@ class _FriendsWidgetState extends State<FriendsWidget> {
   final _apiClient = ApiClient();
   List _users = [];
 
+  // TODO: виджет нуждается в переработке.
   @override
   void initState() {
     super.initState();
@@ -69,7 +70,8 @@ class _FriendsWidgetState extends State<FriendsWidget> {
                               _user['username'],
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 10),
                             Text(

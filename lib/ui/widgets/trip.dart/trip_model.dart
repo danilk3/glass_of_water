@@ -1,10 +1,10 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 import 'package:ml_linalg/linalg.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+
+import '../../../navigation/main_navigation.dart';
 
 class TripModel extends ChangeNotifier {
   double? _gammaAngle;

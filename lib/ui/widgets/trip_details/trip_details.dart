@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/domain/api_client.dart';
 import 'package:glass_of_water/models/trip.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
@@ -16,8 +15,7 @@ class DrivingAdvice {
 }
 
 class TripDetailsWidget extends StatefulWidget {
-
-  final Trip trip; 
+  final Trip trip;
 
   TripDetailsWidget({Key? key, required this.trip}) : super(key: key);
 
@@ -70,7 +68,6 @@ class _TripDetailsWidgetState extends State<TripDetailsWidget> {
   ];
 
   int _index = 0;
-  final _apiClient = ApiClient();
 
   @override
   Widget build(BuildContext context) {
@@ -103,11 +100,13 @@ class _TripDetailsWidgetState extends State<TripDetailsWidget> {
                       '${widget.trip.rate}%',
                       style: const TextStyle(),
                     ),
-                    progressColor: AppColors.getProgressColor(widget.trip.rate / 100.0),
+                    progressColor:
+                        AppColors.getProgressColor(widget.trip.rate / 100.0),
                   ),
                 ),
                 _StatisticsTextWidget(
-                  text: 'Number of glass spills: ${widget.trip.numberOfGlasses}',
+                  text:
+                      'Number of glass spills: ${widget.trip.numberOfGlasses}',
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -160,7 +159,8 @@ class _TripDetailsWidgetState extends State<TripDetailsWidget> {
                         scale: i == _index ? 1 : 0.9,
                         child: Card(
                           elevation: 6,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Center(
@@ -171,7 +171,9 @@ class _TripDetailsWidgetState extends State<TripDetailsWidget> {
                                   ),
                                   Text(
                                     advices[i].title,
-                                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(

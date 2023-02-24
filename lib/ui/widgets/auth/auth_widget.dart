@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/Inherited/provider.dart';
 import 'package:glass_of_water/resources/resources.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
 import 'package:glass_of_water/ui/widgets/auth/auth_model.dart';
+import 'package:provider/provider.dart';
 
 class AuthWidget extends StatelessWidget {
   const AuthWidget({Key? key}) : super(key: key);
@@ -49,8 +49,8 @@ class _FormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<AuthModel>(context);
-    final watch = NotifierProvider.watch<AuthModel>(context);
+    final model = context.read<AuthModel>();
+    final watch = context.watch<AuthModel>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -79,7 +79,7 @@ class _LogInCodeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<AuthModel>(context);
+    final model = context.read<AuthModel>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -115,8 +115,8 @@ class _SendCodeButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<AuthModel>(context);
-    final watch = NotifierProvider.watch<AuthModel>(context);
+    final model = context.read<AuthModel>();
+    final watch = context.watch<AuthModel>();
     final text = watch?.isCodeSend == true ? 'Resend code' : 'Send login code';
     final child = watch?.isEmailSending == true
         ? const SizedBox(
@@ -145,13 +145,15 @@ class _SendCodeButtonWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              onPressed: watch?.isCodeChecking == false && watch?.isTimerStarted == false
+              onPressed: watch?.isCodeChecking == false &&
+                      watch?.isTimerStarted == false
                   ? () => model?.sendEmail(context)
                   : null,
               child: child,
             ),
             const SizedBox(width: 5),
-            if (watch?.isTimerStarted == true) Text('${watch?.remained} seconds'),
+            if (watch?.isTimerStarted == true)
+              Text('${watch?.remained} seconds'),
           ],
         ),
       ],
@@ -166,8 +168,8 @@ class _AuthButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<AuthModel>(context);
-    final watch = NotifierProvider.watch<AuthModel>(context);
+    final model = context.read<AuthModel>();
+    final watch = context.watch<AuthModel>();
     final child = watch?.isCodeChecking == true
         ? const SizedBox(
             width: 15,
@@ -190,7 +192,9 @@ class _AuthButtonWidget extends StatelessWidget {
           ),
         ),
       ),
-      onPressed: watch?.isCodeChecking == false ? () => model?.validateCode(context) : null,
+      onPressed: watch?.isCodeChecking == false
+          ? () => model?.validateCode(context)
+          : null,
       child: child,
     );
   }
@@ -201,7 +205,7 @@ class _ErrorMessageEmailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = NotifierProvider.watch<AuthModel>(context)?.errorMessageEmail;
+    final errorMessage = context.watch<AuthModel>()?.errorMessageEmail;
 
     if (errorMessage == null) {
       return const SizedBox.shrink();
@@ -222,7 +226,7 @@ class _ErrorMessageCodeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = NotifierProvider.watch<AuthModel>(context)?.errorMessageCode;
+    final errorMessage = context.watch<AuthModel>()?.errorMessageCode;
 
     if (errorMessage == null) {
       return const SizedBox.shrink();

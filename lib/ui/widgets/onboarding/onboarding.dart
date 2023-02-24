@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/resources/resources.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
-import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+
+import '../../../navigation/main_navigation.dart';
 
 class OnboardingWidget extends StatefulWidget {
   const OnboardingWidget({Key? key}) : super(key: key);
@@ -43,7 +44,8 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
       body: IntroductionScreen(
         pages: _pages,
         onDone: () {
-          Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.auth);
+          Navigator.of(context)
+              .pushReplacementNamed(MainNavigationRouteNames.auth);
         },
         showBackButton: false,
         showSkipButton: true,

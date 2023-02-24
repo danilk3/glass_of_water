@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/Inherited/provider.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
 import 'package:glass_of_water/ui/widgets/trip.dart/trip_model.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 class TripWidget extends StatefulWidget {
   const TripWidget({Key? key}) : super(key: key);
@@ -13,33 +13,34 @@ class TripWidget extends StatefulWidget {
   State<TripWidget> createState() => _TripWidgetState();
 }
 
-class _TripWidgetState extends State<TripWidget> with SingleTickerProviderStateMixin {
+class _TripWidgetState extends State<TripWidget>
+    with SingleTickerProviderStateMixin {
   bool isSplashing = false;
 
   void startTimer() {
-  var _start = 5;
-  const oneSec = const Duration(seconds: 1);
-  final _timer =  Timer.periodic(
-    oneSec,
-    (Timer timer) {
-      if (_start == 0) {
-        setState(() {
-          print('timer over');
-          isSplashing = false;
-          timer.cancel();
-        });
-      } else {
-        setState(() {
-          _start--;
-        });
-      }
-    },
-  );
-}
+    var _start = 5;
+    const oneSec = const Duration(seconds: 1);
+    final _timer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_start == 0) {
+          setState(() {
+            print('timer over');
+            isSplashing = false;
+            timer.cancel();
+          });
+        } else {
+          setState(() {
+            _start--;
+          });
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final watch = NotifierProvider.watch<TripModel>(context);
+    final watch = context.watch<TripModel>();
     return Column(
       children: [
         SizedBox(
@@ -48,7 +49,6 @@ class _TripWidgetState extends State<TripWidget> with SingleTickerProviderStateM
               ? Lottie.asset(
                   'animations/Splash_short.json',
                   onLoaded: (comp) {
-                    print('hete');
                     isSplashing = true;
                     startTimer();
                   },
@@ -74,7 +74,7 @@ class _StartTripButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<TripModel>(context);
+    final model = context.read<TripModel>();
     return Expanded(
       child: Align(
         alignment: FractionalOffset.bottomCenter,
@@ -83,8 +83,8 @@ class _StartTripButtonWidget extends StatelessWidget {
           height: 40,
           child: ElevatedButton(
             style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(const Color.fromRGBO(255, 92, 0, 1)),
+              backgroundColor: MaterialStateProperty.all<Color>(
+                  const Color.fromRGBO(255, 92, 0, 1)),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(11),
@@ -96,7 +96,8 @@ class _StartTripButtonWidget extends StatelessWidget {
                 context: context,
                 builder: (context) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 210, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 210, horizontal: 20),
                     child: AlertDialog(
                       content: SizedBox(
                         child: Column(
@@ -147,7 +148,7 @@ class _EndTripButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<TripModel>(context);
+    final model = context.read<TripModel>();
     return Expanded(
       child: Align(
         alignment: FractionalOffset.bottomCenter,
@@ -156,8 +157,8 @@ class _EndTripButtonWidget extends StatelessWidget {
           height: 40,
           child: ElevatedButton(
             style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(const Color.fromARGB(255, 255, 0, 0)),
+              backgroundColor: MaterialStateProperty.all<Color>(
+                  const Color.fromARGB(255, 255, 0, 0)),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(11),

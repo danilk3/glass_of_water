@@ -3,7 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="glass_of_water"
+        android:label="Glass of water"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

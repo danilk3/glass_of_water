@@ -1,8 +1,10 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:glass_of_water/data_providers/user_data_provider.dart';
 import 'package:glass_of_water/domain/api_client.dart';
-import 'package:glass_of_water/ui/widgets/navigation/main_navigation.dart';
+
+import '../../../navigation/main_navigation.dart';
 
 class AuthModel extends ChangeNotifier {
   final _userDataProvider = UserDataProvider();
@@ -12,18 +14,23 @@ class AuthModel extends ChangeNotifier {
   final codeTextController = TextEditingController();
 
   String? _errorMessageEmail;
+
   String? get errorMessageEmail => _errorMessageEmail;
 
   String? _errorMessageCode;
+
   String? get errorMessageCode => _errorMessageCode;
 
   bool _isCodeSend = false;
+
   bool get isCodeSend => _isCodeSend;
 
   bool _isEmailSending = false;
+
   bool get isEmailSending => _isEmailSending;
 
   bool _isCodeChecking = false;
+
   bool get isCodeChecking => _isCodeChecking;
 
   Future<void> sendEmail(BuildContext context) async {
@@ -48,7 +55,6 @@ class AuthModel extends ChangeNotifier {
     try {
       isSend = await _apiCLient.sendEmail(email: email);
     } catch (e) {
-      // TODO: поставить таймаут
       _errorMessageEmail = 'There was an error sending one time password';
     }
 
@@ -59,7 +65,7 @@ class AuthModel extends ChangeNotifier {
       return;
     }
     _isCodeSend = true;
-    startTimer();
+    await startTimer();
     notifyListeners();
   }
 
@@ -95,25 +101,28 @@ class AuthModel extends ChangeNotifier {
       return;
     }
 
+    // TODO: исправить
     _userDataProvider.initUser(userInfo);
 
-    await Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.mainScreen);
+    await Navigator.of(context)
+        .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }
 
-  late Timer _timer;
+  int _start = 21;
 
-  int _start = 20;
   int get remained => _start;
-  bool get isTimerStarted => _start < 20;
 
-  void startTimer() {
+  bool get isTimerStarted => _start < 21;
+
+  Future<void> startTimer() async {
+    _start--;
     notifyListeners();
     const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(
+    Timer.periodic(
       oneSec,
       (timer) {
         if (_start == 0) {
-          _start = 20;
+          _start = 21;
           timer.cancel();
           notifyListeners();
         } else {

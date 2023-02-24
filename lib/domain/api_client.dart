@@ -4,9 +4,11 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
+import '../resources/resources.dart';
+
 class ApiClient {
   final _client = HttpClient();
-  static const _host = 'http://51.250.91.38:8080';
+  static const _host = AppConfig.host;
 
   Uri _makeUri(String path, Map<String, dynamic>? parametrs) {
     final uri = Uri.parse('$_host$path');
@@ -33,11 +35,7 @@ class ApiClient {
 
     final body = json.decode(await readResponse(response));
 
-    if (body['status'] as String == 'success') {
-      return true;
-    }
-
-    return false;
+    return body['status'] as String == 'success';
   }
 
   Future<Map<String, dynamic>?> validateCode(
