@@ -13,7 +13,9 @@ class ProfileModel extends ChangeNotifier {
   int _rate = 0;
 
   int get rate => _rate;
+
   String get name => _name;
+
   String get email => _email;
 
   void logOut(BuildContext context) {
@@ -22,8 +24,7 @@ class ProfileModel extends ChangeNotifier {
   }
 
   Future deleteAccount(BuildContext context) async {
-    await _apiClient
-        .deleteAccount(int.parse(await _userDataProvider.getUserId() ?? '0'));
+    await _apiClient.deleteAccount();
     _userDataProvider.logOut();
     Navigator.of(context).pop();
     await Navigator.of(context)

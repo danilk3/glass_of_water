@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
 import 'package:glass_of_water/ui/widgets/trip.dart/trip_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +23,7 @@ class _TripWidgetState extends State<TripWidget>
     const oneSec = const Duration(seconds: 1);
     final _timer = Timer.periodic(
       oneSec,
-      (Timer timer) {
+      (Timer timer) async {
         if (_start == 0) {
           setState(() {
             print('timer over');
@@ -56,7 +57,7 @@ class _TripWidgetState extends State<TripWidget>
               : Lottie.asset('animations/bubbles.json'),
         ),
         if (watch?.isTripStarted == true)
-          const _EndTripButtonWidget()
+          _EndTripButtonWidget()
         else
           const _StartTripButtonWidget(),
         const SizedBox(
@@ -142,7 +143,7 @@ class _StartTripButtonWidget extends StatelessWidget {
 }
 
 class _EndTripButtonWidget extends StatelessWidget {
-  const _EndTripButtonWidget({
+  _EndTripButtonWidget({
     Key? key,
   }) : super(key: key);
 

@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 
 class MainNavigationRouteNames {
   static const tripDetails = '/trip_details';
-  static const mainScreen = '/';
+  static const mainScreen = '/main';
   static const info = '/info';
   static const onboarding = 'onboarding';
   static const auth = 'auth';
@@ -52,6 +52,7 @@ class MainNavigation {
         child: TripResultsWidget(
           numberOfSpills: arg[0],
           elapsedMilliseconds: arg[1],
+          latLen: arg[2],
         ),
       );
     }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/data_providers/user_data_provider.dart';
-import 'package:glass_of_water/domain/api_client.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
+import 'package:glass_of_water/ui/widgets/trip_results/trip_results_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 class DrivingAdvice {
   String title;
@@ -18,12 +19,13 @@ class DrivingAdvice {
 class TripResultsWidget extends StatefulWidget {
   final numberOfSpills;
   final elapsedMilliseconds;
-  final _apiClient = ApiClient();
+  final List<LatLng> latLen;
 
   TripResultsWidget(
       {Key? key,
       required this.numberOfSpills,
-      required this.elapsedMilliseconds})
+      required this.elapsedMilliseconds,
+      required this.latLen})
       : super(key: key);
 
   @override
@@ -74,71 +76,43 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
     ),
   ];
 
-  int _index = 0;
-  double percentRate = 0;
-  String? hoursString;
-  String? minutesString;
-  String? secondsString;
-
-  Future<void> updateRate() async {
-    int userId = int.parse(await UserDataProvider().getUserId() ?? '0');
-    int rate = int.parse(await UserDataProvider().getUserRate() ?? '0');
-    int newRate = (rate + (percentRate * 100.0).toInt()) ~/ 2;
-    await widget._apiClient.updateRate(userId, newRate);
-
-    if (rate == 0) {
-      await UserDataProvider()
-          .setUserRate((percentRate * 100.0).toInt().toString());
-    } else {
-      await UserDataProvider().setUserRate(newRate.toString());
-    }
-  }
-
-  Future<void> sendTrip() async {
-    DateTime now = DateTime.now();
-    String convertedDateTime =
-        "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
-    await widget._apiClient.addTrip(
-      int.parse(await UserDataProvider().getUserId() ?? '0'),
-      (percentRate * 100.0).toInt(),
-      widget.numberOfSpills,
-      '$hoursString:$minutesString:$secondsString',
-      convertedDateTime,
-    );
-  }
+  // TODO: отправлять это в апиху
+  final Set<Polyline> _polyline = {};
+  final Set<Marker> _markers = {};
 
   @override
   void initState() {
     super.initState();
-    final int hours = widget.elapsedMilliseconds ~/ 3600000;
-    final int minutes = (widget.elapsedMilliseconds ~/ 60000) % 60;
-    final int seconds = (widget.elapsedMilliseconds ~/ 1000) % 60;
-    if (hours < 10) {
-      hoursString = '0$hours';
-    } else {
-      hoursString = '$hours';
-    }
+    final model = context.read<TripResultsModel>();
+    model.initModel(widget.elapsedMilliseconds, widget.numberOfSpills);
 
-    if (minutes < 10) {
-      minutesString = '0$minutes';
-    } else {
-      minutesString = '$minutes';
-    }
+    _markers
+      ..add(
+        Marker(
+            markerId: const MarkerId('1'),
+            position: widget.latLen[0],
+            infoWindow: const InfoWindow(title: "Start"),
+            icon: BitmapDescriptor.defaultMarker),
+      )
+      ..add(
+        Marker(
+            markerId: const MarkerId('2'),
+            position: widget.latLen[widget.latLen.length - 1],
+            infoWindow: const InfoWindow(title: "Finish"),
+            icon: BitmapDescriptor.defaultMarker),
+      );
 
-    if (seconds < 10) {
-      secondsString = '0$seconds';
-    } else {
-      secondsString = '$seconds';
-    }
-
-    percentRate =
-        (1 - (widget.numberOfSpills - hours * 2 - minutes ~/ 30) / 100) * 1.0;
-    sendTrip();
-    updateRate();
+    _polyline.add(Polyline(
+      polylineId: PolylineId('1'),
+      points: widget.latLen,
+      color: Colors.green,
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
+    int _index = 0;
+    final model = context.read<TripResultsModel>();
     return Scaffold(
       backgroundColor: AppColors.mainLightGrey,
       appBar: AppBar(
@@ -163,16 +137,17 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                   ),
                   child: LinearPercentIndicator(
                     lineHeight: 25,
-                    percent: percentRate,
+                    percent: model.percentRate,
                     center: Text(
-                      '${percentRate * 100.0}%',
+                      '${model.percentRate * 100.0}%',
                       style: const TextStyle(),
                     ),
-                    progressColor: AppColors.getProgressColor(percentRate),
+                    progressColor:
+                        AppColors.getProgressColor(model.percentRate),
                   ),
                 ),
                 _StatisticsTextWidget(
-                  text: 'Number of glass spills: ${widget.numberOfSpills}',
+                  text: 'Number of glass spills: ${model.numberOfSpills}',
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -185,7 +160,7 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                         style: AppTextStyle.profileOptionsStyle,
                       ),
                       Text(
-                        '$hoursString:$minutesString:$secondsString',
+                        model.time,
                         style: AppTextStyle.profileOptionsBoldStyle,
                       )
                     ],
@@ -240,7 +215,24 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                   ),
                 ),
                 const SizedBox(
-                  height: 100,
+                  height: 30,
+                ),
+                SizedBox(
+                  height: 400,
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: widget.latLen.last,
+                      zoom: 14,
+                    ),
+                    mapType: MapType.normal,
+                    onMapCreated: (GoogleMapController controller) {
+                      model.mapController.complete(controller);
+                    },
+                    polylines: _polyline,
+                    markers: _markers,
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: true,
+                  ),
                 ),
               ],
             )

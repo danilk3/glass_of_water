@@ -1,27 +1,46 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:glass_of_water/domain/api_weather.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ml_linalg/linalg.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import '../../../navigation/main_navigation.dart';
+import '../../../resources/maps_utils.dart';
 
 class TripModel extends ChangeNotifier {
+  ApiWeather _apiWeather = ApiWeather();
+
   double? _gammaAngle;
   double? _thetaAngle;
   double _phiAngle = 0;
   Matrix? _rotationMatrix;
   bool _shouldSpill = false;
+
   bool get shouldSpill => _shouldSpill;
   Vector? _previousWindow;
   bool _isTripStarted = false;
+
   bool get isTripStarted => _isTripStarted;
   int _numberOfSpills = 0;
+
   int get numberOfSpills => _numberOfSpills;
   final _stopwatch = Stopwatch();
 
+  Timer? _mapTimer;
+  List<LatLng> _latLen = [];
+
   void startTrip() {
     int _windowCounter = 0;
+
+    _mapTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
+      // TODO: нужно ли добавлять разрешение пользователя?
+      var position = await MapsUtils().getCurrentPosition();
+      _latLen.add(LatLng(position.latitude, position.longitude));
+    });
+
     _stopwatch.start();
     _numberOfSpills = 0;
     _isTripStarted = true;
@@ -51,9 +70,9 @@ class TripModel extends ChangeNotifier {
         _listenMovements();
         subscription.cancel();
       } else if (_windowCounter % 10 == 0) {
-        _phiAngle += atan(
-            ((((x / 10) - x1) / ((y / 10) - y1)) - tan(_thetaAngle!) * sin(_gammaAngle!)) *
-                (cos(_thetaAngle!) / cos(_gammaAngle!)));
+        _phiAngle += atan(((((x / 10) - x1) / ((y / 10) - y1)) -
+                tan(_thetaAngle!) * sin(_gammaAngle!)) *
+            (cos(_thetaAngle!) / cos(_gammaAngle!)));
         x = y = z = 0;
       } else {
         x += event.x;
@@ -97,7 +116,8 @@ class TripModel extends ChangeNotifier {
       ++_windowCounter;
       if (_windowCounter == 10) {
         ++matrixCounter;
-        var currentWindow = Vector.fromList([x / 10, y / 10, z / 10]) * _rotationMatrix!;
+        var currentWindow =
+            Vector.fromList([x / 10, y / 10, z / 10]) * _rotationMatrix!;
         x = y = z = 0;
         _windowCounter = 0;
 
@@ -137,9 +157,18 @@ class TripModel extends ChangeNotifier {
     final elapsedMilliseconds = _stopwatch.elapsedMilliseconds;
     _stopwatch.stop();
     _stopwatch.reset();
+    _mapTimer?.cancel();
     _isTripStarted = false;
     notifyListeners();
-    Navigator.of(context).pushNamed(MainNavigationRouteNames.tripResults,
-        arguments: [_numberOfSpills, elapsedMilliseconds]);
+    Navigator.of(context)
+        .pushNamed(MainNavigationRouteNames.tripResults, arguments: [
+      _numberOfSpills,
+      elapsedMilliseconds,
+      _latLen,
+    ]);
+  }
+
+  Future<void> getCoordinates() async {
+    var body = await _apiWeather.getWeather();
   }
 }

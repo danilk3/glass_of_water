@@ -1,2 +1,2 @@
 part 'app_images.dart';
-part 'config.dart';
+part 'app_config.dart';
