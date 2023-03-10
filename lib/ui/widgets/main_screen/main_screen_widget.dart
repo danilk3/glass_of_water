@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
 import 'package:glass_of_water/ui/widgets/friends/friends_model.dart';
+import 'package:glass_of_water/ui/widgets/friends/friends_widget.dart';
 import 'package:glass_of_water/ui/widgets/history/history_model.dart';
 import 'package:glass_of_water/ui/widgets/history/history_widget.dart';
 import 'package:glass_of_water/ui/widgets/profile/profile_model.dart';
 import 'package:glass_of_water/ui/widgets/profile/profile_widget.dart';
+import 'package:glass_of_water/ui/widgets/trip.dart/trip_model.dart';
 import 'package:glass_of_water/ui/widgets/trip.dart/trip_widget.dart';
+import 'package:glass_of_water/utils/permission_handler.dart';
 import 'package:provider/provider.dart';
-
-import '../friends/friends_widget.dart';
-import '../trip.dart/trip_model.dart';
 
 class MainScreenWidget extends StatefulWidget {
   const MainScreenWidget({Key? key}) : super(key: key);
@@ -19,6 +19,12 @@ class MainScreenWidget extends StatefulWidget {
 }
 
 class _MainScreenWidgetState extends State<MainScreenWidget> {
+  @override
+  void initState() {
+    super.initState();
+    PermissionHandler().checkPermission();
+  }
+
   int _selectedTab = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[

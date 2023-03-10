@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
 import 'package:glass_of_water/ui/widgets/trip.dart/trip_model.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:glass_of_water/utils/globals.dart' as globals;
+import 'package:glass_of_water/utils/permission_handler.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -46,7 +47,7 @@ class _TripWidgetState extends State<TripWidget>
       children: [
         SizedBox(
           height: 450,
-          child: (watch?.shouldSpill == true || isSplashing == true)
+          child: (watch.shouldSpill == true || isSplashing == true)
               ? Lottie.asset(
                   'animations/Splash_short.json',
                   onLoaded: (comp) {
@@ -56,7 +57,7 @@ class _TripWidgetState extends State<TripWidget>
                 )
               : Lottie.asset('animations/bubbles.json'),
         ),
-        if (watch?.isTripStarted == true)
+        if (watch.isTripStarted)
           _EndTripButtonWidget()
         else
           const _StartTripButtonWidget(),
@@ -93,6 +94,12 @@ class _StartTripButtonWidget extends StatelessWidget {
               ),
             ),
             onPressed: () {
+              if (!globals.geolocationAllowed) {
+                PermissionHandler().checkPermission();
+                if (!globals.geolocationAllowed) {
+                  return;
+                }
+              }
               showDialog(
                 context: context,
                 builder: (context) {
@@ -113,7 +120,7 @@ class _StartTripButtonWidget extends StatelessWidget {
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.pop(context);
-                                model?.startTrip();
+                                model.startTrip();
                               },
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.blue,
@@ -167,7 +174,7 @@ class _EndTripButtonWidget extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              model?.endTrip(context);
+              model.endTrip(context);
             },
             child: Text(
               'End Trip',

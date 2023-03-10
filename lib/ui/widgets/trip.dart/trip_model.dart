@@ -8,7 +8,7 @@ import 'package:ml_linalg/linalg.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import '../../../navigation/main_navigation.dart';
-import '../../../resources/maps_utils.dart';
+import '../../../utils/maps_utils.dart';
 
 class TripModel extends ChangeNotifier {
   ApiWeather _apiWeather = ApiWeather();
@@ -31,6 +31,8 @@ class TripModel extends ChangeNotifier {
 
   Timer? _mapTimer;
   List<LatLng> _latLen = [];
+
+
 
   void startTrip() {
     int _windowCounter = 0;

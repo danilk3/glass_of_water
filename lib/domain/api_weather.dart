@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:glass_of_water/domain/api_base.dart';
-import 'package:glass_of_water/resources/maps_utils.dart';
+import 'package:glass_of_water/utils/maps_utils.dart';
 
 import '../resources/resources.dart';
 import '../utils/permission_handler.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../utils/permission_handler.dart';
+import 'permission_handler.dart';
 
 class MapsUtils {
   Future<Position> getCurrentPosition() async {
