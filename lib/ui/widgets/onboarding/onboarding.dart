@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/resources/resources.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
+import 'package:glass_of_water/ui/widgets/onboarding/onboarding_model.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 import '../../../navigation/main_navigation.dart';
@@ -38,6 +39,12 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    OnboardingModel().setIsFirstTime();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.mainLightGrey,
@@ -45,7 +52,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
         pages: _pages,
         onDone: () {
           Navigator.of(context)
-              .pushReplacementNamed(MainNavigationRouteNames.auth);
+              .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
         },
         showBackButton: false,
         showSkipButton: true,

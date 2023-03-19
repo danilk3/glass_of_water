@@ -6,8 +6,8 @@ import 'package:glass_of_water/ui/widgets/history/history_model.dart';
 import 'package:glass_of_water/ui/widgets/history/history_widget.dart';
 import 'package:glass_of_water/ui/widgets/profile/profile_model.dart';
 import 'package:glass_of_water/ui/widgets/profile/profile_widget.dart';
-import 'package:glass_of_water/ui/widgets/trip.dart/trip_model.dart';
-import 'package:glass_of_water/ui/widgets/trip.dart/trip_widget.dart';
+import 'package:glass_of_water/ui/widgets/trip/trip_model.dart';
+import 'package:glass_of_water/ui/widgets/trip/trip_widget.dart';
 import 'package:glass_of_water/utils/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -60,10 +60,10 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.mainLightGrey,
-      appBar: AppBar(
-        title: const Center(child: Text('Glass of water')),
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   title: const Center(child: Text('Glass of water')),
+      //   centerTitle: true,
+      // ),
       body: _widgetOptions[_selectedTab],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedTab,

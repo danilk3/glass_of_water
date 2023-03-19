@@ -60,7 +60,7 @@ class _FormWidget extends StatelessWidget {
         ),
         const SizedBox(height: 7),
         TextField(
-          controller: model?.emailTextController,
+          controller: model.emailTextController,
           decoration: AppTextStyle.inputDecoration,
         ),
         const _ErrorMessageEmailWidget(),
@@ -68,7 +68,7 @@ class _FormWidget extends StatelessWidget {
           height: 10,
         ),
         const _SendCodeButtonWidget(),
-        if (watch?.isCodeSend == true) const _LogInCodeWidget(),
+        if (watch.isCodeSend == true) const _LogInCodeWidget(),
       ],
     );
   }
@@ -99,7 +99,7 @@ class _LogInCodeWidget extends StatelessWidget {
         ),
         const SizedBox(height: 7),
         TextField(
-          controller: model?.codeTextController,
+          controller: model.codeTextController,
           decoration: AppTextStyle.inputDecoration,
         ),
         const _ErrorMessageCodeWidget(),
@@ -117,8 +117,8 @@ class _SendCodeButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final model = context.read<AuthModel>();
     final watch = context.watch<AuthModel>();
-    final text = watch?.isCodeSend == true ? 'Resend code' : 'Send login code';
-    final child = watch?.isEmailSending == true
+    final text = watch.isCodeSend == true ? 'Resend code' : 'Send login code';
+    final child = watch.isEmailSending == true
         ? const SizedBox(
             width: 15,
             height: 15,
@@ -138,22 +138,22 @@ class _SendCodeButtonWidget extends StatelessWidget {
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                    watch?.isTimerStarted == true ? Colors.grey : Colors.blue),
+                    watch.isTimerStarted == true ? Colors.grey : Colors.blue),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
               ),
-              onPressed: watch?.isCodeChecking == false &&
-                      watch?.isTimerStarted == false
-                  ? () => model?.sendEmail(context)
+              onPressed: watch.isCodeChecking == false &&
+                      watch.isTimerStarted == false
+                  ? () => model.sendEmail(context)
                   : null,
               child: child,
             ),
             const SizedBox(width: 5),
-            if (watch?.isTimerStarted == true)
-              Text('${watch?.remained} seconds'),
+            if (watch.isTimerStarted == true)
+              Text('${watch.remained} seconds'),
           ],
         ),
       ],
@@ -170,7 +170,7 @@ class _AuthButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final model = context.read<AuthModel>();
     final watch = context.watch<AuthModel>();
-    final child = watch?.isCodeChecking == true
+    final child = watch.isCodeChecking == true
         ? const SizedBox(
             width: 15,
             height: 15,
@@ -192,8 +192,8 @@ class _AuthButtonWidget extends StatelessWidget {
           ),
         ),
       ),
-      onPressed: watch?.isCodeChecking == false
-          ? () => model?.validateCode(context)
+      onPressed: watch.isCodeChecking == false
+          ? () => model.validateCode(context)
           : null,
       child: child,
     );
@@ -205,7 +205,7 @@ class _ErrorMessageEmailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = context.watch<AuthModel>()?.errorMessageEmail;
+    final errorMessage = context.watch<AuthModel>().errorMessageEmail;
 
     if (errorMessage == null) {
       return const SizedBox.shrink();
@@ -226,7 +226,7 @@ class _ErrorMessageCodeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = context.watch<AuthModel>()?.errorMessageCode;
+    final errorMessage = context.watch<AuthModel>().errorMessageCode;
 
     if (errorMessage == null) {
       return const SizedBox.shrink();

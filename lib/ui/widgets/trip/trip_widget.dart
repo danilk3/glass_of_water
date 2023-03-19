@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
-import 'package:glass_of_water/ui/widgets/trip.dart/trip_model.dart';
+import 'package:glass_of_water/ui/widgets/trip/trip_model.dart';
 import 'package:glass_of_water/utils/globals.dart' as globals;
 import 'package:glass_of_water/utils/permission_handler.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+
+import '../../../navigation/main_navigation.dart';
 
 class TripWidget extends StatefulWidget {
   const TripWidget({Key? key}) : super(key: key);
@@ -20,11 +22,12 @@ class _TripWidgetState extends State<TripWidget>
   bool isSplashing = false;
 
   void startTimer() {
-    var _start = 5;
-    const oneSec = const Duration(seconds: 1);
-    final _timer = Timer.periodic(
+    isSplashing = true;
+    var _start = 1;
+    const oneSec = Duration(seconds: 1);
+    Timer.periodic(
       oneSec,
-      (Timer timer) async {
+      (timer) async {
         if (_start == 0) {
           setState(() {
             print('timer over');
@@ -45,13 +48,33 @@ class _TripWidgetState extends State<TripWidget>
     final watch = context.watch<TripModel>();
     return Column(
       children: [
+        if (globals.isAuth)
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 40, 20, 40),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(MainNavigationRouteNames.carInfo);
+                },
+                icon: const Icon(
+                  Icons.local_gas_station_outlined,
+                  size: 40,
+                ),
+              ),
+            ),
+          )
+        else
+          const SizedBox(
+            height: 100,
+          ),
         SizedBox(
           height: 450,
           child: (watch.shouldSpill == true || isSplashing == true)
               ? Lottie.asset(
                   'animations/Splash_short.json',
                   onLoaded: (comp) {
-                    isSplashing = true;
                     startTimer();
                   },
                 )

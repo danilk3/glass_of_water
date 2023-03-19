@@ -3,6 +3,7 @@ import 'package:glass_of_water/resources/resources.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
 import 'package:glass_of_water/ui/widgets/profile/profile_model.dart';
 import 'package:glass_of_water/ui/widgets/profile/radial_percent_widget.dart';
+import 'package:glass_of_water/utils/globals.dart' as globals;
 import 'package:provider/provider.dart';
 
 import '../../../navigation/main_navigation.dart';
@@ -22,26 +23,38 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   void initState() {
     super.initState();
-    asyncInit();
+    if (globals.isAuth) {
+      asyncInit();
+    }
   }
 
   Future<void> asyncInit() async {
-    await context.read<ProfileModel>().getUserInfo();
+      final model = context.read<ProfileModel>();
+      await model.getUserInfo();
 
-    final name = context.read<ProfileModel>().name;
-    final email = context.read<ProfileModel>().email;
-    final rate = context.read<ProfileModel>().rate;
+      final name = model.name;
+      final email = model.email;
+      final rate = model.rate;
 
-    setState(() {
-      _email = email;
-      _name = name;
-      _rate = rate;
-    });
+      setState(() {
+        _email = email;
+        _name = name;
+        _rate = rate;
+      });
   }
 
   @override
   Widget build(BuildContext context) {
     final model = context.read<ProfileModel>();
+    if (!globals.isAuth) {
+      return Center(
+        child: TextButton(
+            child: const Text("Login"),
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.auth);
+            }),
+      );
+    }
     return Center(
       child: Column(
         children: [

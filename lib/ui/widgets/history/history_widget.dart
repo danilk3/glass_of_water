@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/models/trip.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
+import 'package:glass_of_water/utils/globals.dart' as globals;
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -20,27 +21,38 @@ class _HistoryWidgetState extends State<HistoryWidget> {
   @override
   void initState() {
     super.initState();
-    asyncInit();
+    if (globals.isAuth) {
+      asyncInit();
+    }
   }
 
   Future<void> asyncInit() async {
-    await context.read<HistoryModel>().getTrips();
-
-    final trips = context.read<HistoryModel>().trips;
+    final model = context.read<HistoryModel>();
+    await model.getTrips();
+    final trips = model.trips;
 
     setState(() {
-      this._trips = trips!;
+      _trips = trips!;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!globals.isAuth) {
+      return Center(
+        child: TextButton(
+            child: const Text("Login"),
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.auth);
+            }),
+      );
+    }
     return ListView.builder(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: _trips?.length,
+      itemCount: _trips.length,
       itemExtent: 163,
       itemBuilder: (BuildContext context, int index) {
-        final _trip = _trips![index];
+        final _trip = _trips[index];
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Stack(

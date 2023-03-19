@@ -20,7 +20,7 @@ class ProfileModel extends ChangeNotifier {
 
   void logOut(BuildContext context) {
     _userDataProvider.logOut();
-    Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.auth);
+    Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }
 
   Future deleteAccount(BuildContext context) async {
@@ -28,7 +28,7 @@ class ProfileModel extends ChangeNotifier {
     _userDataProvider.logOut();
     Navigator.of(context).pop();
     await Navigator.of(context)
-        .pushReplacementNamed(MainNavigationRouteNames.auth);
+        .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }
 
   Future<void> getUserInfo() async {

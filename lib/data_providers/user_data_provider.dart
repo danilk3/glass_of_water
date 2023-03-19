@@ -5,6 +5,7 @@ abstract class Keys {
   static const userName = 'user_name';
   static const userEmail = 'user_email';
   static const userRate = 'user_rate';
+  static const isFirstTime = 'is_first_time';
 }
 
 class UserDataProvider {
@@ -43,5 +44,13 @@ class UserDataProvider {
 
   Future<void> setUserRate(String? value) {
     return _secureStorage.write(key: Keys.userRate, value: value);
+  }
+
+  Future<void> setIsFirstTime(bool isFirstTime) {
+    return _secureStorage.write(key: Keys.isFirstTime, value: isFirstTime.toString());
+  }
+
+  Future<String?> getIsFirstTime() {
+    return _secureStorage.read(key: Keys.isFirstTime);
   }
 }

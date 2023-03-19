@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:glass_of_water/utils/globals.dart' as globals;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../data_providers/user_data_provider.dart';
@@ -46,6 +47,9 @@ class TripResultsModel extends ChangeNotifier {
   }
 
   Future<void> updateRate() async {
+    if (!globals.isAuth) {
+      return;
+    }
     var rate = int.parse(await UserDataProvider().getUserRate() ?? '0');
     var newRate = (rate + (_percentRate * 100.0).toInt()) ~/ 2;
 
@@ -60,6 +64,9 @@ class TripResultsModel extends ChangeNotifier {
   }
 
   Future<void> sendTrip() async {
+    if (!globals.isAuth) {
+      return;
+    }
     DateTime now = DateTime.now();
     String convertedDateTime =
         "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";

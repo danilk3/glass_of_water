@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:glass_of_water/models/trip.dart';
 import 'package:glass_of_water/ui/widgets/auth/auth_model.dart';
 import 'package:glass_of_water/ui/widgets/auth/auth_widget.dart';
+import 'package:glass_of_water/ui/widgets/car_info/car_info_model.dart';
+import 'package:glass_of_water/ui/widgets/car_info/car_info_widget.dart';
 import 'package:glass_of_water/ui/widgets/info/info_widget.dart';
 import 'package:glass_of_water/ui/widgets/main_screen/main_screen_model.dart';
 import 'package:glass_of_water/ui/widgets/main_screen/main_screen_widget.dart';
@@ -20,12 +22,13 @@ class MainNavigationRouteNames {
   static const auth = 'auth';
   static const tripResults = '/trip_results';
   static const aboutUs = '/info/about_us';
+  static const carInfo = 'car_info';
 }
 
 class MainNavigation {
-  String initialRoute(bool isAuth) => isAuth
-      ? MainNavigationRouteNames.mainScreen
-      : MainNavigationRouteNames.onboarding;
+  String initialRoute(bool isFirstTime) => isFirstTime
+      ? MainNavigationRouteNames.onboarding
+      : MainNavigationRouteNames.mainScreen;
 
   final routes = <String, Widget Function(BuildContext)>{
     MainNavigationRouteNames.onboarding: (context) => const OnboardingWidget(),
@@ -55,6 +58,10 @@ class MainNavigation {
           latLen: arg[2],
         ),
       );
-    }
+    },
+    MainNavigationRouteNames.carInfo: (context) => ChangeNotifierProvider(
+      create: (_) => CarInfoModel(),
+      child: const CarInfoWidget(),
+    ),
   };
 }

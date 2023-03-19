@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
@@ -220,6 +222,9 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
                 SizedBox(
                   height: 400,
                   child: GoogleMap(
+                    gestureRecognizers: Set()
+                      ..add(Factory<PanGestureRecognizer>(
+                          () => PanGestureRecognizer())),
                     initialCameraPosition: CameraPosition(
                       target: widget.latLen.last,
                       zoom: 14,

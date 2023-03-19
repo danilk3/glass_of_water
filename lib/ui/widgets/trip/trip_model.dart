@@ -131,14 +131,14 @@ class TripModel extends ChangeNotifier {
           ++_numberOfSpills;
           _shouldSpill = true;
           notifyListeners();
-          await Future.delayed(Duration(seconds: 1));
+          await Future.delayed(const Duration(seconds: 1));
           _shouldSpill = false;
           notifyListeners();
         } else if ((currentWindow[0] - _previousWindow![0]).abs() >= 1.2) {
           ++_numberOfSpills;
           _shouldSpill = true;
           notifyListeners();
-          await Future.delayed(Duration(seconds: 1));
+          await Future.delayed(const Duration(seconds: 1));
           _shouldSpill = false;
           notifyListeners();
         }
