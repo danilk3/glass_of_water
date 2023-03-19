@@ -37,9 +37,6 @@ class TripResultsModel extends ChangeNotifier {
 
     _time = '$_hoursString:$_minutesString:$_secondsString';
 
-    _percentRate =
-        (1 - (numberOfSpills - hours * 2 - minutes ~/ 30) / 100) * 1.0;
-
     _numberOfSpills = numberOfSpills;
 
     final totalMinutes = hours * 60.0 + minutes + seconds / 60.0 + 0.01;
@@ -50,14 +47,13 @@ class TripResultsModel extends ChangeNotifier {
   }
 
   double _countRate(int numberOfSpills, double totalMinutes) {
+    final normalizedTime = totalMinutes / 100 * 15;
     if (numberOfSpills == 0) {
       return 1;
-    } else if (numberOfSpills == totalMinutes) {
+    } else if (numberOfSpills == normalizedTime) {
       return 0.5;
-    } else if (totalMinutes < 1) {
-      return totalMinutes / numberOfSpills;
     } else {
-      return totalMinutes / (numberOfSpills + totalMinutes);
+      return normalizedTime / (numberOfSpills + normalizedTime);
     }
   }
 
