@@ -31,27 +31,41 @@ class TripResultsModel extends ChangeNotifier {
     final minutes = (elapsedMilliseconds ~/ 60000) % 60;
     final seconds = (elapsedMilliseconds ~/ 1000) % 60;
 
-    var _hoursString = hours < 10 ? '0$hours' : '$hours';
-    var _minutesString = minutes < 10 ? '0$minutes' : '$minutes';
-    var _secondsString = seconds < 10 ? '0$seconds' : '$seconds';
+    final _hoursString = hours < 10 ? '0$hours' : '$hours';
+    final _minutesString = minutes < 10 ? '0$minutes' : '$minutes';
+    final _secondsString = seconds < 10 ? '0$seconds' : '$seconds';
 
     _time = '$_hoursString:$_minutesString:$_secondsString';
 
-    _percentRate =
-        (1 - (numberOfSpills - hours * 2 - minutes ~/ 30) / 100) * 1.0;
-
     _numberOfSpills = numberOfSpills;
+
+    final totalMinutes = hours * 60.0 + minutes + seconds / 60.0 + 0.01;
+    _percentRate = _countRate(numberOfSpills, totalMinutes);
 
     sendTrip();
     updateRate();
+  }
+
+  double _countRate(int numberOfSpills, double totalMinutes) {
+    final normalizedTime = totalMinutes / 100 * 15;
+    if (numberOfSpills == 0) {
+      return 1;
+    } else if (numberOfSpills == normalizedTime) {
+      return 0.5;
+    } else {
+      return normalizedTime / (numberOfSpills + normalizedTime);
+    }
   }
 
   Future<void> updateRate() async {
     if (!globals.isAuth) {
       return;
     }
-    var rate = int.parse(await UserDataProvider().getUserRate() ?? '0');
-    var newRate = (rate + (_percentRate * 100.0).toInt()) ~/ 2;
+    final rate = int.parse(await UserDataProvider().getUserRate() ?? '0');
+
+    final countOfTrips = (await _apiClient.getAllTrips()).length;
+
+    final newRate = (rate + _percentRate * 100) ~/ (countOfTrips + 1);
 
     await _apiClient.updateRate(newRate);
 
@@ -67,9 +81,9 @@ class TripResultsModel extends ChangeNotifier {
     if (!globals.isAuth) {
       return;
     }
-    DateTime now = DateTime.now();
-    String convertedDateTime =
-        "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
+    final now = DateTime.now();
+    final convertedDateTime =
+        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
     await _apiClient.addTrip(
       (_percentRate * 100.0).toInt(),
       _numberOfSpills,
