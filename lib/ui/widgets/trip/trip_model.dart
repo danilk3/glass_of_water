@@ -29,14 +29,23 @@ class TripModel extends ChangeNotifier {
   Timer? _mapTimer;
   final List<LatLng> _latLen = [];
 
+  var _x = 0.0;
+  var _y = 0.0;
+  var _z = 0.0;
 
+  var _stableX = 0.0;
+  var _stableY = 0.0;
+  var _stableZ = 0.0;
 
   void startTrip() {
-    int _windowCounter = 0;
+    _init();
+    _initListen();
+  }
 
+  void _init() {
     _mapTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
       // TODO: нужно ли добавлять разрешение пользователя?
-      var position = await MapsUtils().getCurrentPosition();
+      final position = await MapsUtils().getCurrentPosition();
       _latLen.add(LatLng(position.latitude, position.longitude));
     });
 
@@ -44,41 +53,76 @@ class TripModel extends ChangeNotifier {
     _numberOfSpills = 0;
     _isTripStarted = true;
     notifyListeners();
-    double x, y, z, x1, y1, z1;
-    x = y = z = x1 = y1 = z1 = 0;
-    var subscription = accelerometerEvents.listen(null);
+  }
+
+  void _initListen() {
+    var _windowCounter = 0;
+
+    final subscription = accelerometerEvents.listen(null);
     subscription.onData((event) async {
       ++_windowCounter;
 
-      if (_windowCounter < 10) {
-        x += event.x;
-        y += event.y;
-        z += event.z;
-      } else if (_windowCounter == 10) {
-        x1 = x / 10;
-        y1 = y / 10;
-        z1 = z / 10;
-
-        _thetaAngle = asin(y1 / 9.8);
-        _gammaAngle = atan(-x1 / z1);
-        x = y = z = 0;
-      } else if (_windowCounter == 101) {
-        _phiAngle /= 9;
-        _windowCounter = 0;
-        _calculateRotationMatrix();
-        _listenMovements();
-        subscription.cancel();
+      if (_windowCounter == 10) {
+        _setStableMetrics();
       } else if (_windowCounter % 10 == 0) {
-        _phiAngle += atan(((((x / 10) - x1) / ((y / 10) - y1)) -
-                tan(_thetaAngle!) * sin(_gammaAngle!)) *
-            (cos(_thetaAngle!) / cos(_gammaAngle!)));
-        x = y = z = 0;
+        _setMedianMetrics();
+        _increasePhiAngle();
+        _toNullMetrics();
+      } else if (_windowCounter < 100) {
+        _increaseMetrics(event);
       } else {
-        x += event.x;
-        y += event.y;
-        z += event.z;
+        _phiAngle /= 9;
+        _calculateRotationMatrix();
+        await subscription.cancel();
+        _listenMovements();
       }
     });
+  }
+
+  void _increaseMetrics(var event) {
+    _x += event._x;
+    _y += event.y;
+    _z += event.z;
+  }
+
+  void _setStableMetrics(){
+    _setMedianMetrics();
+    _countThetaAngle();
+    _countGammaAngle();
+
+    _stableX = _x;
+    _stableY = _y;
+    _stableZ = _z;
+
+    _toNullMetrics();
+  }
+
+  void _toNullMetrics() {
+    _x = 0;
+    _y = 0;
+    _z = 0;
+  }
+
+  void _setMedianMetrics() {
+    _x /= 10;
+    _y /= 10;
+    _z /= 10;
+  }
+
+  void _countThetaAngle() {
+    _thetaAngle = asin(_y / 9.8);
+  }
+
+  void _countGammaAngle() {
+    _gammaAngle = atan(-_x / _z);
+  }
+
+  void _increasePhiAngle() {
+    var _xStableDiff = _x - _stableX;
+    var _yStableDiff = _y - _stableY;
+    var _angleTanSinComposition = tan(_thetaAngle!) * sin(_gammaAngle!);
+    var _angleCosRelation = cos(_thetaAngle!) / cos(_gammaAngle!);
+    _phiAngle += atan((_xStableDiff / _yStableDiff - _angleTanSinComposition) * _angleCosRelation);
   }
 
   void _calculateRotationMatrix() {
@@ -105,7 +149,7 @@ class TripModel extends ChangeNotifier {
     double x, y, z;
     x = y = z = 0;
     int matrixCounter = 0;
-    var subscription = accelerometerEvents.listen(null);
+    final subscription = accelerometerEvents.listen(null);
     // ignore: cascade_invocations
     subscription.onData((event) async {
       if (!_isTripStarted) {
@@ -115,7 +159,7 @@ class TripModel extends ChangeNotifier {
       ++_windowCounter;
       if (_windowCounter == 10) {
         ++matrixCounter;
-        var currentWindow =
+        final currentWindow =
             Vector.fromList([x / 10, y / 10, z / 10]) * _rotationMatrix!;
         x = y = z = 0;
         _windowCounter = 0;
