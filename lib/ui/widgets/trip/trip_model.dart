@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/domain/api_weather.dart';
+import 'package:glass_of_water/domain/weather/api_weather.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ml_linalg/linalg.dart';
 import 'package:sensors_plus/sensors_plus.dart';

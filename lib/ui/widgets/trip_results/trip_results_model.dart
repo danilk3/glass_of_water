@@ -1,14 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:glass_of_water/domain/client/trip/trip_service.dart';
+import 'package:glass_of_water/domain/client/user/user_service.dart';
 import 'package:glass_of_water/utils/globals.dart' as globals;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../data_providers/user_data_provider.dart';
-import '../../../domain/api_client.dart';
 
 class TripResultsModel extends ChangeNotifier {
-  final _apiClient = ApiClient();
+  final _tripService = TripService();
+  final _userService = UserService();
 
   final Completer<GoogleMapController> _mapController = Completer();
 
@@ -53,7 +55,7 @@ class TripResultsModel extends ChangeNotifier {
     var rate = int.parse(await UserDataProvider().getUserRate() ?? '0');
     var newRate = (rate + (_percentRate * 100.0).toInt()) ~/ 2;
 
-    await _apiClient.updateRate(newRate);
+    await _userService.updateRate(newRate);
 
     if (rate == 0) {
       await UserDataProvider()
@@ -70,7 +72,7 @@ class TripResultsModel extends ChangeNotifier {
     DateTime now = DateTime.now();
     String convertedDateTime =
         "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
-    await _apiClient.addTrip(
+    await _tripService.addTrip(
       (_percentRate * 100.0).toInt(),
       _numberOfSpills,
       _time,
