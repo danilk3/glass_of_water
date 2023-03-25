@@ -19,29 +19,31 @@ class TripWidget extends StatefulWidget {
 
 class _TripWidgetState extends State<TripWidget>
     with SingleTickerProviderStateMixin {
-  bool isSplashing = false;
+  // bool isSplashing = false;
 
-  void startTimer() {
-    isSplashing = true;
-    var _start = 1;
-    const oneSec = Duration(seconds: 1);
-    Timer.periodic(
-      oneSec,
-      (timer) async {
-        if (_start == 0) {
-          setState(() {
-            print('timer over');
-            isSplashing = false;
-            timer.cancel();
-          });
-        } else {
-          setState(() {
-            _start--;
-          });
-        }
-      },
-    );
-  }
+  // void startTimer() {
+  //   setState(() {
+  //     isSplashing = true;
+  //   });
+  //   var _start = 1;
+  //   const oneSec = Duration(seconds: 1);
+  //   Timer.periodic(
+  //     oneSec,
+  //     (timer) async {
+  //       if (_start == 0) {
+  //         print('timer over');
+  //         setState(() {
+  //           isSplashing = false;
+  //         });
+  //         timer.cancel();
+  //       } else {
+  //         setState(() {
+  //           _start--;
+  //         });
+  //       }
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -71,12 +73,13 @@ class _TripWidgetState extends State<TripWidget>
           ),
         SizedBox(
           height: 450,
-          child: (watch.shouldSpill == true || isSplashing == true)
+          child: (watch.shouldSpill == true)
               ? Lottie.asset(
                   'animations/Splash_short.json',
-                  onLoaded: (comp) {
-                    startTimer();
-                  },
+                  // onLoaded: (comp) {
+                  //   startTimer();
+                  // },
+                  repeat: false,
                 )
               : Lottie.asset('animations/bubbles.json'),
         ),
