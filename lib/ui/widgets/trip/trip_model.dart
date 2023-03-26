@@ -36,8 +36,6 @@ class TripModel extends ChangeNotifier {
   var _stableX = 0.0;
   var _stableY = 0.0;
 
-  // var _stableZ = 0.0;
-
   void startTrip() {
     _init();
     _initListen();
@@ -79,9 +77,9 @@ class TripModel extends ChangeNotifier {
   }
 
   void _increaseMetrics(AccelerometerEvent event) {
-    _x += event.x;
-    _y += event.y;
-    _z += event.z;
+    _x += event.x / 10;
+    _y += event.y / 10;
+    _z += event.z / 10;
   }
 
   void _setStableMetrics() {
@@ -91,7 +89,6 @@ class TripModel extends ChangeNotifier {
 
     _stableX = _x;
     _stableY = _y;
-    // _stableZ = _z;
 
     _toNullMetrics();
   }
@@ -169,8 +166,7 @@ class TripModel extends ChangeNotifier {
 
         _previousWindow ??= currentWindow;
 
-        if ((currentWindow[0] - _previousWindow![1]).abs() >= 0.8 ||
-            (currentWindow[0] - _previousWindow![0]).abs() >= 1.2) {
+        if ((currentWindow[0] - _previousWindow![0]).abs() >= 1.2) {
           ++_numberOfSpills;
           _shouldSpill = true;
           notifyListeners();

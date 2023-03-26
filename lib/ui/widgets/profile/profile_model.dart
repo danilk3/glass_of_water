@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/data_providers/user_data_provider.dart';
-import 'package:glass_of_water/domain/api_client.dart';
+import 'package:glass_of_water/domain/client/user/user_service.dart';
 import 'package:glass_of_water/models/driver/level.dart';
 import 'package:glass_of_water/models/driver/level_enum.dart';
 import 'package:glass_of_water/navigation/main_navigation.dart';
-import 'package:glass_of_water/domain/client/user/user_service.dart';
 import 'package:glass_of_water/utils/globals.dart' as globals;
-
-import '../../../navigation/main_navigation.dart';
-import 'package:glass_of_water/models/driver/level.dart';
-import 'package:glass_of_water/models/driver/level_enum.dart';
 
 class ProfileModel extends ChangeNotifier {
   final _userDataProvider = UserDataProvider();
