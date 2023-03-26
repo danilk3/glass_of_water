@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:glass_of_water/domain/api_weather.dart';
 import 'package:glass_of_water/navigation/main_navigation.dart';
 import 'package:glass_of_water/utils/maps_utils.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,7 +9,6 @@ import 'package:ml_linalg/linalg.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 class TripModel extends ChangeNotifier {
-  final ApiWeather _apiWeather = ApiWeather();
 
   double? _gammaAngle;
   double? _thetaAngle;
@@ -167,9 +165,5 @@ class TripModel extends ChangeNotifier {
       elapsedMilliseconds,
       _latLen,
     ]);
-  }
-
-  Future<void> getCoordinates() async {
-    var body = await _apiWeather.getWeather();
   }
 }
