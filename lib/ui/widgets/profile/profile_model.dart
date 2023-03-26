@@ -28,9 +28,8 @@ class ProfileModel extends ChangeNotifier {
 
   Future deleteAccount(BuildContext context) async {
     await _userService.deleteAccount();
-    globals.isAuth = true;
-    _userDataProvider.logOut();
-    Navigator.of(context).pop();
+    globals.isAuth = false;
+    await _userDataProvider.logOut();
     await Navigator.of(context)
         .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }

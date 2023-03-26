@@ -30,11 +30,12 @@ class _FriendsWidgetState extends State<FriendsWidget> {
     if (!globals.isAuth) {
       return Center(
         child: TextButton(
-            child: const Text("Login"),
-            onPressed: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(MainNavigationRouteNames.auth);
-            }),
+          child: const Text("Login"),
+          onPressed: () {
+            Navigator.of(context)
+                .pushReplacementNamed(MainNavigationRouteNames.auth);
+          },
+        ),
       );
     }
     final watch = context.watch<FriendsModel>();
@@ -81,9 +82,7 @@ class _FriendsWidgetState extends State<FriendsWidget> {
                       child: IconButton(
                         onPressed: () {
                           Navigator.of(context).pushNamed(
-                            MainNavigationRouteNames.friends_invites,
-                            arguments: watch.invites,
-                          );
+                              MainNavigationRouteNames.friends_invites);
                         },
                         icon: const Icon(
                           Icons.person_add,

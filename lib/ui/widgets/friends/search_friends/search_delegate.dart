@@ -112,7 +112,7 @@ class FriendsSearchDelegate extends SearchDelegate {
                 onPressed: () {
                   model.sendInvite(result);
                 },
-                child: Text('invite'),
+                child: const Text('Invite'),
               ),
             ],
           ),

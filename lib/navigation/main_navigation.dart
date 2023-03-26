@@ -67,12 +67,9 @@ class MainNavigation {
           child: const CarInfoWidget(),
         ),
     MainNavigationRouteNames.friends_invites: (context) {
-      final arg = ModalRoute.of(context)!.settings.arguments as List;
       return ChangeNotifierProvider(
         create: (_) => FriendsInvitesModel(),
-        child: FriendsInvitesWidget(
-          invites: arg,
-        ),
+        child: const FriendsInvitesWidget(),
       );
     },
   };
