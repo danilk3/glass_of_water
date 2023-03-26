@@ -35,6 +35,7 @@ class TripModel extends ChangeNotifier {
 
   var _stableX = 0.0;
   var _stableY = 0.0;
+
   // var _stableZ = 0.0;
 
   void startTrip() {
@@ -60,7 +61,6 @@ class TripModel extends ChangeNotifier {
     final subscription = accelerometerEvents.listen(null);
     subscription.onData((event) async {
       ++_windowCounter;
-print("hui");
       if (_windowCounter == 10) {
         _setStableMetrics();
       } else if (_windowCounter % 10 == 0) {
@@ -84,7 +84,7 @@ print("hui");
     _z += event.z;
   }
 
-  void _setStableMetrics(){
+  void _setStableMetrics() {
     _setMedianMetrics();
     _countThetaAngle();
     _countGammaAngle();
@@ -121,7 +121,10 @@ print("hui");
     final _yStableDiff = _y - _stableY;
     final _angleTanSinComposition = tan(_thetaAngle!) * sin(_gammaAngle!);
     final _angleCosRelation = cos(_thetaAngle!) / cos(_gammaAngle!);
-    _phiAngle += atan((_xStableDiff / _yStableDiff - _angleTanSinComposition) * _angleCosRelation);
+    _phiAngle += atan(
+      (_xStableDiff / _yStableDiff - _angleTanSinComposition) *
+          _angleCosRelation,
+    );
   }
 
   void _calculateRotationMatrix() {
@@ -159,8 +162,8 @@ print("hui");
       ++_windowCounter;
       if (_windowCounter == 10) {
         ++matrixCounter;
-        print("pizda: " + matrixCounter.toString());
-        final currentWindow = Vector.fromList([x / 10, y / 10, z / 10]) * _rotationMatrix!;
+        final currentWindow =
+            Vector.fromList([x / 10, y / 10, z / 10]) * _rotationMatrix!;
         x = y = z = 0;
         _windowCounter = 0;
 
@@ -171,7 +174,7 @@ print("hui");
           ++_numberOfSpills;
           _shouldSpill = true;
           notifyListeners();
-          await Future.delayed(const Duration(seconds: 1));
+          // await Future.delayed(const Duration(seconds: 1));
           _shouldSpill = false;
           notifyListeners();
         }
@@ -191,16 +194,19 @@ print("hui");
 
   void endTrip(BuildContext context) {
     final elapsedMilliseconds = _stopwatch.elapsedMilliseconds;
-    _stopwatch..stop()
-    ..reset();
+    _stopwatch
+      ..stop()
+      ..reset();
     _mapTimer?.cancel();
     _isTripStarted = false;
     notifyListeners();
-    Navigator.of(context)
-        .pushNamed(MainNavigationRouteNames.tripResults, arguments: [
-      _numberOfSpills,
-      elapsedMilliseconds,
-      _latLen,
-    ],);
+    Navigator.of(context).pushNamed(
+      MainNavigationRouteNames.tripResults,
+      arguments: [
+        _numberOfSpills,
+        elapsedMilliseconds,
+        _latLen,
+      ],
+    );
   }
 }
