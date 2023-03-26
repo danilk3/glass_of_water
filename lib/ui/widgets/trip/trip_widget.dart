@@ -1,14 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:glass_of_water/navigation/main_navigation.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
 import 'package:glass_of_water/ui/widgets/trip/trip_model.dart';
 import 'package:glass_of_water/utils/globals.dart' as globals;
 import 'package:glass_of_water/utils/permission_handler.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-
-import '../../../navigation/main_navigation.dart';
 
 class TripWidget extends StatefulWidget {
   const TripWidget({Key? key}) : super(key: key);
@@ -19,31 +16,6 @@ class TripWidget extends StatefulWidget {
 
 class _TripWidgetState extends State<TripWidget>
     with SingleTickerProviderStateMixin {
-  // bool isSplashing = false;
-
-  // void startTimer() {
-  //   setState(() {
-  //     isSplashing = true;
-  //   });
-  //   var _start = 1;
-  //   const oneSec = Duration(seconds: 1);
-  //   Timer.periodic(
-  //     oneSec,
-  //     (timer) async {
-  //       if (_start == 0) {
-  //         print('timer over');
-  //         setState(() {
-  //           isSplashing = false;
-  //         });
-  //         timer.cancel();
-  //       } else {
-  //         setState(() {
-  //           _start--;
-  //         });
-  //       }
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +24,7 @@ class _TripWidgetState extends State<TripWidget>
       children: [
         if (globals.isAuth)
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 40, 20, 40),
+            padding: const EdgeInsets.fromLTRB(0, 40, 20, 40),
             child: Align(
               alignment: Alignment.topRight,
               child: IconButton(
@@ -76,9 +48,6 @@ class _TripWidgetState extends State<TripWidget>
           child: (watch.shouldSpill == true)
               ? Lottie.asset(
                   'animations/Splash_short.json',
-                  // onLoaded: (comp) {
-                  //   startTimer();
-                  // },
                   repeat: false,
                 )
               : Lottie.asset('animations/bubbles.json'),
