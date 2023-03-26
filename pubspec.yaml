@@ -22,6 +22,8 @@ dependencies:
   ml_linalg: ^13.9.0
   provider: ^6.0.5
   geolocator: ^9.0.2
+  shimmer: ^2.0.0
+  badges: ^3.0.2
 
 dev_dependencies:
   flutter_test:

@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:glass_of_water/data_providers/user_data_provider.dart';
+
 class ApiBase {
   final client = HttpClient();
+  final userDataProvider = UserDataProvider();
 
   Future<String> readResponse(HttpClientResponse response) {
     final completer = Completer<String>();
@@ -21,6 +24,15 @@ class ApiBase {
     } else {
       return uri;
     }
+  }
+
+  Future<int> getUserId() async {
+    var userId = int.parse(await userDataProvider.getUserId() ?? '-1');
+    return userId;
+  }
+
+  Future<String> getUserName() async {
+    return await userDataProvider.getUserName() ?? "";
   }
 }
 

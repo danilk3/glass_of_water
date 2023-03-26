@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:glass_of_water/data_providers/user_data_provider.dart';
-import 'package:glass_of_water/domain/api_client.dart';
+import 'package:glass_of_water/domain/client/auth/auth_service.dart';
 import 'package:glass_of_water/utils/globals.dart' as globals;
 
 import '../../../navigation/main_navigation.dart';
 
 class AuthModel extends ChangeNotifier {
   final _userDataProvider = UserDataProvider();
-  final _apiCLient = ApiClient();
+  final _authService = AuthService();
 
   final emailTextController = TextEditingController();
   final codeTextController = TextEditingController();
@@ -38,8 +38,7 @@ class AuthModel extends ChangeNotifier {
     final email = emailTextController.text.trim();
 
     if (email.isEmpty ||
-        !RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
             .hasMatch(email)) {
       _errorMessageEmail = 'Wrong email';
       notifyListeners();
@@ -55,7 +54,7 @@ class AuthModel extends ChangeNotifier {
     bool? isSend;
 
     try {
-      isSend = await _apiCLient.sendEmail(email: email);
+      isSend = await _authService.sendEmail(email: email);
     } catch (e) {
       _errorMessageEmail = 'There was an error sending one time password';
     }
@@ -90,7 +89,7 @@ class AuthModel extends ChangeNotifier {
     Map<String, dynamic>? userInfo;
 
     try {
-      userInfo = await _apiCLient.validateCode(email: email, code: code);
+      userInfo = await _authService.validateCode(email: email, code: code);
     } catch (e) {
       _errorMessageCode = 'Wrong one time password';
     }
@@ -124,7 +123,7 @@ class AuthModel extends ChangeNotifier {
     const oneSec = Duration(seconds: 1);
     Timer.periodic(
       oneSec,
-          (timer) {
+      (timer) {
         if (_start == 0) {
           _start = 21;
           timer.cancel();

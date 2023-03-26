@@ -4,10 +4,16 @@ import 'package:glass_of_water/domain/api_client.dart';
 import 'package:glass_of_water/models/driver/level.dart';
 import 'package:glass_of_water/models/driver/level_enum.dart';
 import 'package:glass_of_water/navigation/main_navigation.dart';
+import 'package:glass_of_water/domain/client/user/user_service.dart';
+import 'package:glass_of_water/utils/globals.dart' as globals;
+
+import '../../../navigation/main_navigation.dart';
+import 'package:glass_of_water/models/driver/level.dart';
+import 'package:glass_of_water/models/driver/level_enum.dart';
 
 class ProfileModel extends ChangeNotifier {
   final _userDataProvider = UserDataProvider();
-  final _apiClient = ApiClient();
+  final _userService = UserService();
 
   String _email = '';
   String _name = '';
@@ -23,14 +29,16 @@ class ProfileModel extends ChangeNotifier {
   Level get level => _level;
 
   void logOut(BuildContext context) {
+    globals.isAuth = false;
     _userDataProvider.logOut();
-    Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.mainScreen);
+    Navigator.of(context)
+        .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }
 
   Future deleteAccount(BuildContext context) async {
-    await _apiClient.deleteAccount();
-    _userDataProvider.logOut();
-    Navigator.of(context).pop();
+    await _userService.deleteAccount();
+    globals.isAuth = false;
+    await _userDataProvider.logOut();
     await Navigator.of(context)
         .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }
