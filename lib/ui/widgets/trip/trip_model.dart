@@ -174,12 +174,12 @@ class TripModel extends ChangeNotifier {
           ++_numberOfSpills;
           _shouldSpill = true;
           notifyListeners();
-          // await Future.delayed(const Duration(seconds: 1));
+          await Future.delayed(const Duration(seconds: 1));
           _shouldSpill = false;
           notifyListeners();
         }
         _previousWindow = currentWindow;
-        if (matrixCounter == 50) {
+        if (matrixCounter == 1000) {
           matrixCounter = 0;
           await subscription.cancel();
           _initListen();
