@@ -21,10 +21,10 @@ packages:
     dependency: "direct main"
     description:
       name: badges
-      sha256: "461031a60efbb95276f52107f63d5d45008b5ca1eb7f8ca440cadda9ec2143b0"
+      sha256: d33d4e07197d6e61ddc940640f2b4dc303d3c80887011344940e24d7522f8d26
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.2"
+    version: "3.0.3"
   boolean_selector:
     dependency: transitive
     description:
@@ -404,10 +404,10 @@ packages:
     dependency: "direct main"
     description:
       name: ml_linalg
-      sha256: "6aecffeda4ccb8ad375e9b4df4288f7d963ae8ecb8516b061b65bd2e75b1f46d"
+      sha256: "09b857fc522cda948d4898c2a8640c09cd3f992f7fd6720898871d3b1c279f48"
       url: "https://pub.dev"
     source: hosted
-    version: "13.11.29"
+    version: "13.11.30"
   nested:
     dependency: transitive
     description:
@@ -500,10 +500,10 @@ packages:
     dependency: transitive
     description:
       name: pointycastle
-      sha256: ae73e842cdd27a3467a71d70cefd9b198538aab4fc7dde1d0e8c78c96225abf0
+      sha256: c3120a968135aead39699267f4c74bc9a08e4e909e86bc1b0af5bfd78691123c
       url: "https://pub.dev"
     source: hosted
-    version: "3.7.1"
+    version: "3.7.2"
   process:
     dependency: transitive
     description:
