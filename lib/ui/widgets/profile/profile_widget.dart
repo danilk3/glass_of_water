@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/resources/resources.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
@@ -29,30 +31,33 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 
   Future<void> asyncInit() async {
-      final model = context.read<ProfileModel>();
-      await model.getUserInfo();
+    final model = context.read<ProfileModel>();
+    await model.getUserInfo();
 
-      final name = model.name;
-      final email = model.email;
-      final rate = model.rate;
+    final name = model.name;
+    final email = model.email;
+    final rate = model.rate;
 
-      setState(() {
-        _email = email;
-        _name = name;
-        _rate = rate;
-      });
+    setState(() {
+      _email = email;
+      _name = name;
+      _rate = rate;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final model = context.read<ProfileModel>();
+    final watch = context.watch<ProfileModel>();
     if (!globals.isAuth) {
       return Center(
         child: TextButton(
-            child: const Text("Login"),
-            onPressed: () {
-              Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.auth);
-            }),
+          child: const Text("Login"),
+          onPressed: () {
+            Navigator.of(context)
+                .pushReplacementNamed(MainNavigationRouteNames.auth);
+          },
+        ),
       );
     }
     return Center(
@@ -66,11 +71,29 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               // user`s rating
               percent: _rate / 100,
               lineWidth: 4,
-              // user photo
-              child: const Image(
-                image: AssetImage(AppImages.defaultAvatar),
-                height: 45,
-                width: 45,
+              child: GestureDetector(
+                onTap: model.pickImage,
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 35,
+                      backgroundImage: (watch.imagePath == null)
+                          ? const AssetImage(AppImages.defaultAvatar)
+                              as ImageProvider
+                          : FileImage(
+                              File(model.imagePath!),
+                            ),
+                      backgroundColor: Colors.white,
+                    ),
+                    const Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Icon(
+                        Icons.edit,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

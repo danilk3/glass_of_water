@@ -29,10 +29,14 @@ class TripModel extends ChangeNotifier {
   Timer? _mapTimer;
   final List<LatLng> _latLen = [];
 
+  bool _isSurvivalMode = false;
   var _x = 0.0;
   var _y = 0.0;
   var _z = 0.0;
 
+  void setIsSurvivalMode(bool mode) {
+    _isSurvivalMode = mode;
+  }
   var _stableX = 0.0;
   var _stableY = 0.0;
 

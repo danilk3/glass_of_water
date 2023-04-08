@@ -4,6 +4,7 @@ import 'package:glass_of_water/ui/themes/text_style.dart';
 import 'package:glass_of_water/ui/widgets/trip/trip_model.dart';
 import 'package:glass_of_water/utils/globals.dart' as globals;
 import 'package:glass_of_water/utils/permission_handler.dart';
+import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -20,23 +21,40 @@ class _TripWidgetState extends State<TripWidget>
   Widget build(BuildContext context) {
     final watch = context.watch<TripModel>();
 
+    final model = context.read<TripModel>();
     return Column(
       children: [
         if (globals.isAuth)
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 40, 20, 40),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(MainNavigationRouteNames.carInfo);
-                },
-                icon: const Icon(
-                  Icons.local_gas_station_outlined,
-                  size: 40,
+            padding: const EdgeInsets.fromLTRB(10, 40, 20, 40),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                LiteRollingSwitch(
+                  onTap: () {},
+                  onDoubleTap: () {},
+                  onChanged: (bool position) {
+                    model.setIsSurvivalMode(position);
+                  },
+                  onSwipe: () {},
+                  textOff: 'Regular',
+                  colorOff: Colors.green,
+                  iconOff: Icons.sentiment_very_satisfied,
+                  textOn: 'Survival',
+                  colorOn: Colors.red,
+                  iconOn: Icons.sentiment_very_dissatisfied,
                 ),
-              ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamed(MainNavigationRouteNames.carInfo);
+                  },
+                  icon: const Icon(
+                    Icons.local_gas_station_outlined,
+                    size: 40,
+                  ),
+                ),
+              ],
             ),
           )
         else
@@ -64,24 +82,6 @@ class _TripWidgetState extends State<TripWidget>
     );
   }
 }
-
-// class _GlassWidget extends StatelessWidget {
-//
-//   _GlassWidget({required this.watch});
-//
-//   static const String bubblesAnim = 'animations/bubbles.json';
-//   static const String splashAnim = 'animations/Splash_short.json';
-//
-//   final TripModel watch;
-//
-//   String _anim = bubblesAnim;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Lottie.asset(_anim, repeat: true, controller: controller);
-//   }
-//
-// }
 
 class _StartTripButtonWidget extends StatelessWidget {
   const _StartTripButtonWidget({

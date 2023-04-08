@@ -5,10 +5,14 @@ import 'package:glass_of_water/models/driver/level.dart';
 import 'package:glass_of_water/models/driver/level_enum.dart';
 import 'package:glass_of_water/navigation/main_navigation.dart';
 import 'package:glass_of_water/utils/globals.dart' as globals;
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 
 class ProfileModel extends ChangeNotifier {
   final _userDataProvider = UserDataProvider();
   final _userService = UserService();
+  final ImagePicker _imagePicker = ImagePicker();
 
   String _email = '';
   String _name = '';
@@ -22,6 +26,10 @@ class ProfileModel extends ChangeNotifier {
 
   String get email => _email;
   Level get level => _level;
+
+  String? _imagePath;
+
+  String? get imagePath => _imagePath;
 
   void logOut(BuildContext context) {
     globals.isAuth = false;
@@ -44,5 +52,21 @@ class ProfileModel extends ChangeNotifier {
     _rate = int.parse(await _userDataProvider.getUserRate() ?? '0');
     final s = await _userDataProvider.getUserLevel();
     _level = Level.buildLevel(LevelEnum.values.firstWhere((e) => e.toString() == 'LevelEnum.$s'));
+    _imagePath = await _userDataProvider.getAvatarPath();
+  }
+
+  Future<void> pickImage() async {
+    final image = await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      return;
+    }
+    final path = (await getApplicationDocumentsDirectory()).path;
+    final fileName = basename(image.path);
+    var avatarPath = '$path/$fileName';
+    await image.saveTo(avatarPath);
+    await _userDataProvider.setAvatarPath(avatarPath);
+    _imagePath = avatarPath;
+    notifyListeners();
+    // TODO: добавить отправку в апи
   }
 }

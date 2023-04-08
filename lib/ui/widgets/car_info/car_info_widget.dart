@@ -21,7 +21,7 @@ class CarInfoWidget extends StatelessWidget {
             children: [
               SizedBox(height: 20,),
               Text(
-                'engine hui',
+                'mock',
                 style: AppTextStyle.inputLabelStyle,
               ),
               const SizedBox(height: 7),
