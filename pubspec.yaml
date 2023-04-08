@@ -24,6 +24,9 @@ dependencies:
   geolocator: ^9.0.2
   shimmer: ^2.0.0
   badges: ^3.0.2
+  lite_rolling_switch: ^1.0.1
+  image_picker: ^0.8.7
+  path_provider: ^2.0.14
 
 dev_dependencies:
   flutter_test:

@@ -6,6 +6,7 @@ abstract class Keys {
   static const userEmail = 'user_email';
   static const userRate = 'user_rate';
   static const isFirstTime = 'is_first_time';
+  static const avatarPath = 'avatar_path';
   static const userLevel = 'user_level';
 }
 
@@ -13,6 +14,7 @@ class UserDataProvider {
   static const _secureStorage = FlutterSecureStorage();
 
   Future<void> logOut() {
+    _secureStorage.delete(key: Keys.avatarPath);
     return _secureStorage.delete(key: Keys.userId);
   }
 
@@ -60,4 +62,13 @@ class UserDataProvider {
   Future<String?> getIsFirstTime() {
     return _secureStorage.read(key: Keys.isFirstTime);
   }
+
+  Future<void> setAvatarPath(String avatarPath) {
+    return _secureStorage.write(key: Keys.avatarPath, value: avatarPath);
+  }
+
+  Future<String?> getAvatarPath() {
+    return _secureStorage.read(key: Keys.avatarPath);
+  }
+
 }
