@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:glass_of_water/data_providers/user_data_provider.dart';
+import 'package:glass_of_water/models/driver/level_enum.dart';
 
 class ApiBase {
   final client = HttpClient();
@@ -33,6 +34,10 @@ class ApiBase {
 
   Future<String> getUserName() async {
     return await userDataProvider.getUserName() ?? "";
+  }
+
+  Future<String> getUserLevel() async {
+    return await userDataProvider.getUserLevel() ?? "";
   }
 }
 

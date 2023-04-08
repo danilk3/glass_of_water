@@ -8,7 +8,13 @@ import 'package:glass_of_water/models/driver/level_enum.dart';
 import 'package:glass_of_water/models/driver/mastery.dart';
 
 abstract class Level {
+  late LevelEnum level;
   Map<String, double> getParams();
+
+  @override
+  String toString(){
+    return level.name;
+  }
 
   static Level buildLevel(LevelEnum level) {
     switch (level) {

@@ -71,6 +71,8 @@ class TripResultsModel extends ChangeNotifier {
 
     await _userService.updateRate(newRate);
 
+    await _userService.updateLevel();
+
     if (rate == 0) {
       await UserDataProvider()
           .setUserRate((_percentRate * 100.0).toInt().toString());

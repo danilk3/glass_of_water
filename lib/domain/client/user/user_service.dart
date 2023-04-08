@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:glass_of_water/domain/api_base.dart';
+import 'package:glass_of_water/models/driver/level_enum.dart';
 import 'package:glass_of_water/resources/resources.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,6 +14,18 @@ class UserService extends ApiBase {
     final url = makeUri('$_host/user/$id', null);
 
     final paramenters = <String, dynamic>{'rate': newRate.toString()};
+
+    final headers = {'Content-Type': 'application/json'};
+
+    await http.put(url, headers: headers, body: jsonEncode(paramenters));
+  }
+
+  Future<void> updateLevel() async {
+    var id = await getUserId();
+    final url = makeUri('$_host/user/$id', null);
+
+    var level = await getUserLevel();
+    final paramenters = <String, dynamic>{'level': level};
 
     final headers = {'Content-Type': 'application/json'};
 

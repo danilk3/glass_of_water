@@ -19,6 +19,11 @@ class _TripWidgetState extends State<TripWidget>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+
+    const String bubblesAnim = 'animations/bubbles.json';
+    const String splashAnim = 'animations/Splash_short.json';
+
+    String _anim = bubblesAnim;
     final watch = context.watch<TripModel>();
 
     final model = context.read<TripModel>();
@@ -63,13 +68,10 @@ class _TripWidgetState extends State<TripWidget>
           ),
         SizedBox(
             height: 450,
-            child: (watch.shouldSpill == true)
-                ? Lottie.asset(
-                    'animations/Splash_short.json',
-                    repeat: false,
-                  )
-                : Lottie.asset('animations/bubbles.json'),
-            // child: _GlassWidget(watch: watch),
+            child: Lottie.asset(
+                    watch.shouldSpill ? splashAnim : bubblesAnim,
+                    repeat: true,
+                  ),
     ),
         if (watch.isTripStarted)
           _EndTripButtonWidget()

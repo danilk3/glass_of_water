@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:glass_of_water/models/driver/level.dart';
 import 'package:glass_of_water/navigation/main_navigation.dart';
 import 'package:glass_of_water/utils/maps_utils.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,6 +10,7 @@ import 'package:ml_linalg/linalg.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 class TripModel extends ChangeNotifier {
+  late Level _level;
 
   late double? _gammaAngle;
   late double? _thetaAngle;
@@ -51,6 +53,8 @@ class TripModel extends ChangeNotifier {
       _latLen.add(LatLng(position.latitude, position.longitude));
     });
 
+    // _level = await
+
     _stopwatch.start();
     _numberOfSpills = 0;
     _isTripStarted = true;
@@ -81,9 +85,9 @@ class TripModel extends ChangeNotifier {
   }
 
   void _increaseMetrics(AccelerometerEvent event) {
-    _x += event.x / 10;
-    _y += event.y / 10;
-    _z += event.z / 10;
+    _x += event.x;
+    _y += event.y;
+    _z += event.z;
   }
 
   void _setStableMetrics() {
@@ -161,10 +165,10 @@ class TripModel extends ChangeNotifier {
       }
 
       ++_windowCounter;
-      if (_windowCounter == 10) {
+      if (_windowCounter == 55) {
         ++matrixCounter;
         final currentWindow =
-            Vector.fromList([x / 10, y / 10, z / 10]) * _rotationMatrix!;
+            Vector.fromList([x / 55, y / 55, z / 55]) * _rotationMatrix!;
         x = y = z = 0;
         _windowCounter = 0;
 
