@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:glass_of_water/data_providers/user_data_provider.dart';
 import 'package:glass_of_water/models/driver/level.dart';
 import 'package:glass_of_water/navigation/main_navigation.dart';
 import 'package:glass_of_water/utils/maps_utils.dart';
@@ -10,6 +11,9 @@ import 'package:ml_linalg/linalg.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 class TripModel extends ChangeNotifier {
+
+  final _userDataProvider = UserDataProvider();
+
   late Level _level;
 
   late double? _gammaAngle;
@@ -31,13 +35,15 @@ class TripModel extends ChangeNotifier {
   Timer? _mapTimer;
   final List<LatLng> _latLen = [];
 
-  bool _isSurvivalMode = false;
+  double _survivalModeFactor = 1;
   var _x = 0.0;
   var _y = 0.0;
   var _z = 0.0;
 
   void setIsSurvivalMode(bool mode) {
-    _isSurvivalMode = mode;
+    if (mode) {
+      _survivalModeFactor = 1.5;
+    }
   }
   var _stableX = 0.0;
   var _stableY = 0.0;
@@ -47,13 +53,13 @@ class TripModel extends ChangeNotifier {
     _initListen();
   }
 
-  void _init() {
+  Future<void> _init() async {
     _mapTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       final position = await MapsUtils().getCurrentPosition();
       _latLen.add(LatLng(position.latitude, position.longitude));
     });
 
-    // _level = await
+    _level = Level.buildLevel(await _userDataProvider.getUserLevel());
 
     _stopwatch.start();
     _numberOfSpills = 0;
@@ -165,16 +171,20 @@ class TripModel extends ChangeNotifier {
       }
 
       ++_windowCounter;
-      if (_windowCounter == 55) {
+      if (_windowCounter == _level.windowFrameCounter * _survivalModeFactor) {
         ++matrixCounter;
         final currentWindow =
-            Vector.fromList([x / 55, y / 55, z / 55]) * _rotationMatrix!;
+            Vector.fromList([
+              x / _level.windowFrameCounter * _survivalModeFactor,
+              y / _level.windowFrameCounter * _survivalModeFactor,
+              z / _level.windowFrameCounter * _survivalModeFactor
+            ]) * _rotationMatrix!;
         x = y = z = 0;
         _windowCounter = 0;
 
         _previousWindow ??= currentWindow;
 
-        if ((currentWindow[0] - _previousWindow![0]).abs() >= 1.2) {
+        if ((currentWindow[0] - _previousWindow![0]).abs() >= _level.gForceMetric) {
           ++_numberOfSpills;
           _shouldSpill = true;
           notifyListeners();

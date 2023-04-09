@@ -2,12 +2,13 @@ import 'dart:convert';
 
 import 'package:glass_of_water/domain/api_base.dart';
 import 'package:glass_of_water/resources/resources.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TripService extends ApiBase {
   static const _host = AppConfig.clientHost;
 
   Future<void> addTrip(
-      int rate, int numberOfGlasses, String tripTime, String startTime) async {
+      int rate, int numberOfGlasses, String tripTime, String startTime, List<LatLng> latlen) async {
     var id = await getUserId();
     final url = makeUri('$_host/user/$id/trips', null);
 
@@ -16,7 +17,8 @@ class TripService extends ApiBase {
       'countOfGlasses': numberOfGlasses,
       'time': tripTime,
       'averageSpeed': 0,
-      'startTime': startTime
+      'startTime': startTime,
+      'latlen': latlen
     };
 
     final request = await client.postUrl(url);

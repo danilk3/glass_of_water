@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:glass_of_water/domain/api_base.dart';
-import 'package:glass_of_water/models/driver/level_enum.dart';
 import 'package:glass_of_water/resources/resources.dart';
 import 'package:http/http.dart' as http;
 

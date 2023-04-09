@@ -86,7 +86,7 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
   void initState() {
     super.initState();
     final model = context.read<TripResultsModel>();
-    model.initModel(widget.elapsedMilliseconds, widget.numberOfSpills);
+    model.initModel(widget.elapsedMilliseconds, widget.numberOfSpills, widget.latLen);
 
     _markers
       ..add(

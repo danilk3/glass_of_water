@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:glass_of_water/data_providers/user_data_provider.dart';
 import 'package:glass_of_water/domain/client/user/user_service.dart';
 import 'package:glass_of_water/models/driver/level.dart';
-import 'package:glass_of_water/models/driver/level_enum.dart';
 import 'package:glass_of_water/navigation/main_navigation.dart';
 import 'package:glass_of_water/utils/globals.dart' as globals;
 import 'package:image_picker/image_picker.dart';
@@ -18,7 +17,7 @@ class ProfileModel extends ChangeNotifier {
   String _name = '';
   int _rate = 0;
 
-  Level _level = Level.buildLevel(LevelEnum.beginner);
+  Level _level = Level.buildLevel('beginner');
 
   int get rate => _rate;
 
@@ -51,7 +50,7 @@ class ProfileModel extends ChangeNotifier {
     _email = await _userDataProvider.getUserEmail() ?? '';
     _rate = int.parse(await _userDataProvider.getUserRate() ?? '0');
     final s = await _userDataProvider.getUserLevel();
-    _level = Level.buildLevel(LevelEnum.values.firstWhere((e) => e.toString() == 'LevelEnum.$s'));
+    _level = Level.buildLevel('beginner');
     _imagePath = await _userDataProvider.getAvatarPath();
   }
 

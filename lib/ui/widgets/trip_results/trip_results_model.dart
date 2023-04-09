@@ -1,12 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:glass_of_water/data_providers/user_data_provider.dart';
 import 'package:glass_of_water/domain/client/trip/trip_service.dart';
 import 'package:glass_of_water/domain/client/user/user_service.dart';
 import 'package:glass_of_water/utils/globals.dart' as globals;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../../../data_providers/user_data_provider.dart';
 
 class TripResultsModel extends ChangeNotifier {
   final _tripService = TripService();
@@ -21,6 +20,7 @@ class TripResultsModel extends ChangeNotifier {
   double get percentRate => _percentRate;
 
   late int _numberOfSpills;
+  late List<LatLng> _latlen;
 
   int get numberOfSpills => _numberOfSpills;
 
@@ -28,7 +28,7 @@ class TripResultsModel extends ChangeNotifier {
 
   String get time => _time;
 
-  void initModel(int elapsedMilliseconds, int numberOfSpills) {
+  void initModel(int elapsedMilliseconds, int numberOfSpills, List<LatLng> latlen) {
     final hours = elapsedMilliseconds ~/ 3600000;
     final minutes = (elapsedMilliseconds ~/ 60000) % 60;
     final seconds = (elapsedMilliseconds ~/ 1000) % 60;
@@ -40,6 +40,7 @@ class TripResultsModel extends ChangeNotifier {
     _time = '$_hoursString:$_minutesString:$_secondsString';
 
     _numberOfSpills = numberOfSpills;
+    _latlen = latlen;
 
     final totalMinutes = hours * 60.0 + minutes + seconds / 60.0 + 0.01;
     _percentRate = _countRate(numberOfSpills, totalMinutes);
@@ -67,7 +68,7 @@ class TripResultsModel extends ChangeNotifier {
 
     final countOfTrips = (await _tripService.getAllTrips()).length;
 
-    final newRate = (rate + _percentRate * 100) ~/ (countOfTrips + 1);
+    final newRate = (rate ~/ countOfTrips + _percentRate * 100) ~/ (countOfTrips + 1);
 
     await _userService.updateRate(newRate);
 
@@ -93,6 +94,7 @@ class TripResultsModel extends ChangeNotifier {
       _numberOfSpills,
       _time,
       convertedDateTime,
+      _latlen
     );
   }
 }

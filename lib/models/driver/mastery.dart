@@ -1,12 +1,9 @@
 import 'package:glass_of_water/models/driver/level.dart';
 
 class Mastery extends Level {
-  Map<String, double> _params = {
-    "a": 1.0
-  };
 
-  @override
-  Map<String, double> getParams() {
-    return _params;
+  Mastery(String level) : super(level) {
+    windowFrameCounter = 65;
+    gForceMetric = 1.0;
   }
 }
