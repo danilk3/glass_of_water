@@ -8,6 +8,7 @@ import 'package:glass_of_water/ui/widgets/trip_details/trip_details_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DrivingAdvice {
   String title;
@@ -113,6 +114,18 @@ class _TripDetailsWidgetState extends State<TripDetailsWidget> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Trip results'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.send,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Share.share(
+                  "Hello! I recently had a trip making sure I was driving safely. By the way, I went up in the drivers' ranking. If you want to be a cool driver too, go to https://play.google.com/");
+            },
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
