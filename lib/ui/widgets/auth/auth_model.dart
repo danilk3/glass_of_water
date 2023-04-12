@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:glass_of_water/data_providers/user_data_provider.dart';
 import 'package:glass_of_water/domain/client/auth/auth_service.dart';
+import 'package:glass_of_water/navigation/main_navigation.dart';
 import 'package:glass_of_water/utils/globals.dart' as globals;
-
-import '../../../navigation/main_navigation.dart';
 
 class AuthModel extends ChangeNotifier {
   final _userDataProvider = UserDataProvider();

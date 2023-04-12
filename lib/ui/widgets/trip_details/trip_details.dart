@@ -1,8 +1,13 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/models/trip.dart';
 import 'package:glass_of_water/ui/themes/app_colors.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
+import 'package:glass_of_water/ui/widgets/trip_details/trip_details_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 class DrivingAdvice {
   String title;
@@ -69,8 +74,40 @@ class _TripDetailsWidgetState extends State<TripDetailsWidget> {
 
   int _index = 0;
 
+  final Set<Polyline> _polyline = {};
+  final Set<Marker> _markers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _markers
+      ..add(
+        Marker(
+            markerId: const MarkerId('1'),
+            position: widget.trip.latlen[0]!,
+            infoWindow: const InfoWindow(title: "Start"),
+            icon: BitmapDescriptor.defaultMarker),
+      )
+      ..add(
+        Marker(
+            markerId: const MarkerId('2'),
+            position: widget.trip.latlen[widget.trip.latlen.length - 1]!,
+            infoWindow: const InfoWindow(title: "Finish"),
+            icon: BitmapDescriptor.defaultMarker),
+      );
+
+    _polyline.add(
+      Polyline(
+        polylineId: PolylineId('1'),
+        points: widget.trip.latlen.whereType<LatLng>().toList(),
+        color: Colors.green,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final model = context.read<TripDetailsModel>();
     return Scaffold(
       backgroundColor: AppColors.mainLightGrey,
       appBar: AppBar(
@@ -194,7 +231,27 @@ class _TripDetailsWidgetState extends State<TripDetailsWidget> {
                   ),
                 ),
                 const SizedBox(
-                  height: 100,
+                  height: 30,
+                ),
+                SizedBox(
+                  height: 400,
+                  child: GoogleMap(
+                    gestureRecognizers: Set()
+                      ..add(const Factory<PanGestureRecognizer>(
+                              PanGestureRecognizer.new)),
+                    initialCameraPosition: CameraPosition(
+                      target: widget.trip.latlen.last!,
+                      zoom: 14,
+                    ),
+                    mapType: MapType.normal,
+                    onMapCreated: (GoogleMapController controller) {
+                      model.mapController.complete(controller);
+                    },
+                    polylines: _polyline,
+                    markers: _markers,
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: true,
+                  ),
                 ),
               ],
             )

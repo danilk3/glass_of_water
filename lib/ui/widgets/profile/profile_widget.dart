@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:glass_of_water/resources/resources.dart';
 import 'package:glass_of_water/ui/themes/text_style.dart';
+import 'package:glass_of_water/ui/widgets/help_widgets/unauth_login_widget.dart';
 import 'package:glass_of_water/ui/widgets/profile/profile_model.dart';
 import 'package:glass_of_water/ui/widgets/profile/radial_percent_widget.dart';
 import 'package:glass_of_water/utils/globals.dart' as globals;
@@ -18,9 +19,7 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
-  String _email = '';
-  String _name = '';
-  int _rate = 0;
+  bool editName = false;
 
   @override
   void initState() {
@@ -33,16 +32,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   Future<void> asyncInit() async {
     final model = context.read<ProfileModel>();
     await model.getUserInfo();
-
-    final name = model.name;
-    final email = model.email;
-    final rate = model.rate;
-
-    setState(() {
-      _email = email;
-      _name = name;
-      _rate = rate;
-    });
   }
 
   @override
@@ -50,15 +39,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     final model = context.read<ProfileModel>();
     final watch = context.watch<ProfileModel>();
     if (!globals.isAuth) {
-      return Center(
-        child: TextButton(
-          child: const Text("Login"),
-          onPressed: () {
-            Navigator.of(context)
-                .pushReplacementNamed(MainNavigationRouteNames.auth);
-          },
-        ),
-      );
+      return const UnauthLoginWidget();
     }
     return Center(
       child: Column(
@@ -69,7 +50,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             height: 75,
             child: RadialPercentWidget(
               // user`s rating
-              percent: _rate / 100,
+              percent: model.rate / 100,
               lineWidth: 4,
               child: GestureDetector(
                 onTap: model.pickImage,
@@ -99,20 +80,68 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           ),
           const SizedBox(height: 10),
           Text(
-            '$_rate%',
+            '${model.rate}%',
             style: AppTextStyle.boldTextStyle,
           ),
           const SizedBox(height: 10),
-          Text(
-            // user`s name
-            _name,
-            style: AppTextStyle.profileInfoStyle,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (editName)
+                Container(
+                  width: 100,
+                  child: TextField(
+                    // user`s name
+                    style: AppTextStyle.profileInfoStyle,
+                    controller: model.usernameTextController,
+                  ),
+                )
+              else
+                Text(
+                  // user`s name
+                  watch.name,
+                  style: AppTextStyle.profileInfoStyle,
+                ),
+              if (editName)
+                IconButton(
+                  onPressed: () {
+                    model.updateUsername();
+                    setState(() {
+                      editName = false;
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.done,
+                    color: Colors.blue,
+                  ),
+                )
+              else
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      editName = true;
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.edit,
+                    color: Colors.blue,
+                  ),
+                )
+            ],
           ),
-          const SizedBox(height: 10),
+          const _ErrorMessageEmailWidget(),
           Text(
             // user`s email
-            _email,
+            model.email,
             style: AppTextStyle.profileInfoStyle,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            // user`s email
+            model.level,
+            style: AppTextStyle.boldTextStyle,
           ),
           const SizedBox(
             height: 30,
@@ -217,6 +246,27 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             height: 30,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ErrorMessageEmailWidget extends StatelessWidget {
+  const _ErrorMessageEmailWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final errorMessage = context.watch<ProfileModel>().errorMessageUsername;
+
+    if (errorMessage == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: Text(
+        errorMessage,
+        style: const TextStyle(color: Color.fromARGB(255, 185, 49, 39)),
       ),
     );
   }

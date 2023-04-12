@@ -78,7 +78,6 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
     ),
   ];
 
-  // TODO: отправлять это в апиху
   final Set<Polyline> _polyline = {};
   final Set<Marker> _markers = {};
 
@@ -86,7 +85,8 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
   void initState() {
     super.initState();
     final model = context.read<TripResultsModel>();
-    model.initModel(widget.elapsedMilliseconds, widget.numberOfSpills);
+    model.initModel(
+        widget.elapsedMilliseconds, widget.numberOfSpills, widget.latLen);
 
     _markers
       ..add(
@@ -104,11 +104,13 @@ class _TripResultsWidgetState extends State<TripResultsWidget> {
             icon: BitmapDescriptor.defaultMarker),
       );
 
-    _polyline.add(Polyline(
-      polylineId: PolylineId('1'),
-      points: widget.latLen,
-      color: Colors.green,
-    ));
+    _polyline.add(
+      Polyline(
+        polylineId: PolylineId('1'),
+        points: widget.latLen,
+        color: Colors.green,
+      ),
+    );
   }
 
   @override

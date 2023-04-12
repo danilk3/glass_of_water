@@ -8,15 +8,16 @@ import 'package:http/http.dart' as http;
 class UserService extends ApiBase {
   static const _host = AppConfig.clientHost;
 
-  Future<void> updateRate(int newRate) async {
-    var id = await getUserId();
+  Future<void> updateUser(parameters) async {
+    final id = await getUserId();
     final url = makeUri('$_host/user/$id', null);
-
-    final paramenters = <String, dynamic>{'rate': newRate.toString()};
-
     final headers = {'Content-Type': 'application/json'};
+    var response =
+        await http.put(url, headers: headers, body: jsonEncode(parameters));
 
-    await http.put(url, headers: headers, body: jsonEncode(paramenters));
+    if (response.statusCode == 400) {
+      throw Exception();
+    }
   }
 
   Future<List> getAllUsers() async {
@@ -33,7 +34,7 @@ class UserService extends ApiBase {
   }
 
   Future<void> deleteAccount() async {
-    var id = await getUserId();
+    final id = await getUserId();
     final url = makeUri('$_host/user/$id', null);
 
     final request = await client.deleteUrl(url);
