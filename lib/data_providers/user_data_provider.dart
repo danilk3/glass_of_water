@@ -23,7 +23,7 @@ class UserDataProvider {
     setUserName(userInfo['username']?.toString());
     setUserRate(userInfo['rate']?.toString());
     setUserEmail(userInfo['email']?.toString());
-    setUserLevel(userInfo['user_level']?.toString());
+    setUserLevel(userInfo['level']?.toString());
   }
 
   Future<String?> getUserId() => _secureStorage.read(key: Keys.userId);

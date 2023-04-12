@@ -8,6 +8,7 @@ import 'package:glass_of_water/utils/globals.dart' as globals;
 import 'package:provider/provider.dart';
 
 import '../../../navigation/main_navigation.dart';
+import '../help_widgets/unauth_login_widget.dart';
 
 class FriendsWidget extends StatefulWidget {
   const FriendsWidget({Key? key}) : super(key: key);
@@ -28,15 +29,7 @@ class _FriendsWidgetState extends State<FriendsWidget> {
   @override
   Widget build(BuildContext context) {
     if (!globals.isAuth) {
-      return Center(
-        child: TextButton(
-          child: const Text("Login"),
-          onPressed: () {
-            Navigator.of(context)
-                .pushReplacementNamed(MainNavigationRouteNames.auth);
-          },
-        ),
-      );
+      return const UnauthLoginWidget();
     }
     final watch = context.watch<FriendsModel>();
 
@@ -108,77 +101,92 @@ class _FriendsWidgetState extends State<FriendsWidget> {
                     ),
                   ],
                 ),
-                Expanded(
-                  child: ListView.builder(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    itemExtent: 120,
-                    itemCount: watch.friendsList.length,
-                    itemBuilder: (context, index) {
-                      final _user = watch.friendsList[index];
-                      return Stack(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: Colors.black.withOpacity(0.2),
+                if (watch.friendsList.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'You have not friends(',
+                          style: AppTextStyle.boldTextStyle,
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  Expanded(
+                    child: ListView.builder(
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      itemExtent: 120,
+                      itemCount: watch.friendsList.length,
+                      itemBuilder: (context, index) {
+                        final _user = watch.friendsList[index];
+                        return Stack(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.black.withOpacity(0.2),
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  )
+                                ],
                               ),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 3),
-                                )
-                              ],
-                            ),
-                            clipBehavior: Clip.hardEdge,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(height: 20),
-                                        Text(
-                                          _user['username'],
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          "rate: ${_user['rate']}",
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
+                              clipBehavior: Clip.hardEdge,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 20),
+                                          Text(
+                                            _user['username'],
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Text(
+                                            "rate: ${_user['rate']}",
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(10),
-                              onTap: () => {},
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(10),
+                                onTap: () => {},
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                )
+                          ],
+                        );
+                      },
+                    ),
+                  )
               ],
             ),
           );

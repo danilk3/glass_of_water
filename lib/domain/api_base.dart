@@ -34,10 +34,6 @@ class ApiBase {
   Future<String> getUserName() async {
     return await userDataProvider.getUserName() ?? "";
   }
-
-  Future<String> getUserLevel() async {
-    return await userDataProvider.getUserLevel() ?? "";
-  }
 }
 
 extension HttpClientResponseJsonDecode on HttpClientResponse {

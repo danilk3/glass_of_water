@@ -8,6 +8,7 @@ import 'package:glass_of_water/utils/globals.dart' as globals;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TripResultsModel extends ChangeNotifier {
+  final _userDataProvider = UserDataProvider();
   final _tripService = TripService();
   final _userService = UserService();
 
@@ -68,11 +69,15 @@ class TripResultsModel extends ChangeNotifier {
 
     final countOfTrips = (await _tripService.getAllTrips()).length;
 
-    final newRate = (rate ~/ countOfTrips + _percentRate * 100) ~/ (countOfTrips + 1);
+    var newRate;
+    if (countOfTrips == 0) {
+      newRate = (rate + _percentRate * 100) ~/ (countOfTrips + 1);
+    } else {
+      newRate = (rate ~/ countOfTrips + _percentRate * 100) ~/ (countOfTrips + 1);
+    }
 
-    await _userService.updateRate(newRate);
-
-    await _userService.updateLevel();
+    var level = await _userDataProvider.getUserLevel() ?? "";
+    await _userService.updateUser(<String, dynamic>{'rate': newRate.toString(), 'level': level});
 
     if (rate == 0) {
       await UserDataProvider()
