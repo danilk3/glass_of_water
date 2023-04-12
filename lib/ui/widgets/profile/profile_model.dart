@@ -56,7 +56,6 @@ class ProfileModel extends ChangeNotifier {
     _name = await _userDataProvider.getUserName() ?? '';
     _email = await _userDataProvider.getUserEmail() ?? '';
     _rate = int.parse(await _userDataProvider.getUserRate() ?? '0');
-    _userDataProvider.getUserLevel();
     _level = (await _userDataProvider.getUserLevel())!;
     _imagePath = await _userDataProvider.getAvatarPath();
     usernameTextController = TextEditingController(text: _name);
@@ -70,7 +69,7 @@ class ProfileModel extends ChangeNotifier {
     }
     final path = (await getApplicationDocumentsDirectory()).path;
     final fileName = basename(image.path);
-    var avatarPath = '$path/$fileName';
+    final avatarPath = '$path/$fileName';
     await image.saveTo(avatarPath);
     await _userDataProvider.setAvatarPath(avatarPath);
     _imagePath = avatarPath;
